@@ -2,7 +2,7 @@ import jp.ac.uec.daihinmin.player.*;
 import jp.ac.uec.daihinmin.*;
 import jp.ac.uec.daihinmin.card.*;
 
-import strategy.DefaultStrategy.*;
+import chs.daihinmin.TeamGAI.strategy.*;
 
 public class dDrunk extends BotSkeleton {
 	Default defaultStrategy = new Default();

@@ -1,5 +1,7 @@
-package strategy.strategy;
+package chs.daihinmin.TeamGAI.strategy;
 
+import static jp.ac.uec.daihinmin.card.MeldFactory.PASS;
+import static jp.ac.uec.daihinmin.card.MeldFactory.createSingleMeldJoker;
 import jp.ac.uec.daihinmin.player.*;
 import jp.ac.uec.daihinmin.*;
 import jp.ac.uec.daihinmin.card.*;
