@@ -1,11 +1,16 @@
+import static jp.ac.uec.daihinmin.card.MeldFactory.PASS;
+import static jp.ac.uec.daihinmin.card.MeldFactory.createSingleMeldJoker;
 import jp.ac.uec.daihinmin.player.*;
 import jp.ac.uec.daihinmin.*;
 import jp.ac.uec.daihinmin.card.*;
 
 import chs.daihinmin.TeamGAI.strategy.*;
+import chs.daihinmin.TeamGAI.base.*;
 
 public class dDrunk extends BotSkeleton {
 	Default defaultStrategy = new Default();
+	PatternMake patMaker = new PatternMake();
+
 	/*
 	 * public Cards requestingGivingCards(){
 	 * 
@@ -27,11 +32,12 @@ public class dDrunk extends BotSkeleton {
 		return result;
 	}
 
-	public Meld requestingPlay() {
+	public Meld requestingPlay() { 
 		// 役の作成
-		Melds melds = Melds.parseMelds(this.hand());
+		//Melds melds = Melds.parseMelds(this.hand());
+		Melds melds = patMaker.patMake(this.hand());
 		// 場の状況
-		Place place = this.place();
+		Place place = this.place();								
 		// ルール
 		Rules rules = this.rules();
 
