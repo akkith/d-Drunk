@@ -36,7 +36,7 @@ public class Default {
 			}
 			// 場に出されている役の,タイプ,枚数,ランク,革命中か否か,に合わせて,「出すことができる」候補に絞る．
 			melds = melds.extract(Melds.typeOf(place.type()).and(Melds.sizeOf(place.size()).and(Melds.rankOf(next_rank)
-					.or(place.order() == Order.NORMAL ? Melds.rankUnder(next_rank) : Melds.rankOver(next_rank)))));
+					.or(place.order() == Order.NORMAL ? Melds.rankOver(next_rank) : Melds.rankUnder(next_rank)))));
 		}
 		// 残った候補の中からさらに絞る．たとえば，場のオーダが通常のとき 最も弱い役を候補に残す．
 		melds = melds.extract(place.order() == Order.NORMAL ? Melds.MIN_RANK : Melds.MAX_RANK);

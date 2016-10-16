@@ -9,6 +9,7 @@ import chs.daihinmin.TeamGAI.base.*;
 
 public class dDrunk extends BotSkeleton {
 	Default defaultStrategy = new Default();
+	Dashiosimi nomalStrategy = new Dashiosimi();
 	PatternMake patMaker = new PatternMake();
 
 	/*
@@ -41,7 +42,11 @@ public class dDrunk extends BotSkeleton {
 		// ルール
 		Rules rules = this.rules();
 
-		return defaultStrategy.requestingPlay(melds, place, rules);
+		//提出用の役
+		Meld playMeld = nomalStrategy.requestingPlay(melds, place, rules);
+		
+		//return defaultStrategy.requestingPlay(melds, place, rules);
+		return playMeld;
 	}
 
 }

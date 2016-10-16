@@ -5,7 +5,7 @@ import jp.ac.uec.daihinmin.card.*;
 //import jp.ac.uec.daihinmin.card.Melds.*;
 
 public class PatternMake {
-	boolean showFlag = true;
+	boolean showFlag = false;
 	
 	public PatternMake(){
 		//do nothing
@@ -23,7 +23,9 @@ public class PatternMake {
 		for(int i = 4; i >= 2; i--){
 			Melds groups = Melds.parseGroupMelds(tHands.extract(Cards.JOKERS.not())).extract(Melds.sizeOf(i));
 			if(!groups.isEmpty()){
-				System.out.println("Look groups" + groups.toString() );
+				if(showFlag){
+					System.out.println("Look groups" + groups.toString() );
+				}
 				makedMelds = makedMelds.add(groups);
 				//作業用手札からカードを取り除く
 				tHands = tHands.remove(Melds.project(groups));
