@@ -1,0 +1,1 @@
+java -cp daihinmin.jar jp.ac.uec.daihinmin.net.TableClient -player dDrunk &
