@@ -12,6 +12,22 @@ public class Default {
 		//do noting
 	}
 	
+	public Cards requestingGivingCards(Cards hand, Rules rules, int rank) {
+		Cards result = Cards.EMPTY_CARDS;
+		// 手札を昇順にソート．たとえば，JOKER S2 HA ... D4 D3
+		Cards sortedHand = Cards.sort(hand);
+		// 渡すカードの枚数だけ，resultにカードを追加
+		for (int i = 0; i < Rules.sizeGivenCards(rules, rank); i++) {
+			result = result.add(
+					sortedHand.get(/* 平民より上か？ 注:07年度のルールでは平民以上の時のみ選ぶことができる */
+							Rules.heiminRank(rules) < rank ? sortedHand.size() - 1 - i /* 平民より下 */
+									: i /* 平民より上 */));
+		}
+		// たとえば，大貧民なら D3 D4
+		// たとえば，大富豪なら JOKER S2
+		return result;
+	}
+	
 	public Meld requestingPlay(Melds melds, Place place, Rules rules) {
 
 		// 場に何のカードも出されていなければ,
