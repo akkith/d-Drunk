@@ -11,12 +11,24 @@ public class dDrunk extends BotSkeleton {
 	Default defaultStrategy = new Default();
 	Dashiosimi nomalStrategy = new Dashiosimi();
 	PatternMake patMaker = new PatternMake();
+	PlayedCardList cardList;
 
 	/*
 	 * public Cards requestingGivingCards(){
 	 * 
 	 * return null; }
 	 */
+	public void gameStarted(){
+		super.gameStarted();
+		cardList = new PlayedCardList();
+	}
+	
+	public void played(Integer num, Meld playedMeld){
+		super.played(num, playedMeld);
+		// 場に出たカードを記録
+		cardList.updateList(playedMeld);
+	}
+	
 	public Cards requestingGivingCards() {
 		Cards hand = this.hand();
 		Rules rules = this.rules();
@@ -40,6 +52,8 @@ public class dDrunk extends BotSkeleton {
 		Meld playMeld = nomalStrategy.requestingPlay(melds, place, rules);
 		
 		//return defaultStrategy.requestingPlay(melds, place, rules);
+		cardList.updateList(playMeld);
+		cardList.showCards();
 		return playMeld;
 	}
 
