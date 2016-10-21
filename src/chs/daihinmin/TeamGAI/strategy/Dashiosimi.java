@@ -2,6 +2,11 @@ package chs.daihinmin.TeamGAI.strategy;
 
 import static jp.ac.uec.daihinmin.card.MeldFactory.PASS;
 import static jp.ac.uec.daihinmin.card.MeldFactory.createSingleMeldJoker;
+
+import java.util.ArrayList;
+
+import jp.ac.hosei.daihinmin.fujita2.MeldSet;
+import jp.ac.hosei.daihinmin.fujita2.Utils;
 import jp.ac.uec.daihinmin.player.*;
 import jp.ac.uec.daihinmin.*;
 import jp.ac.uec.daihinmin.card.*;
@@ -9,20 +14,59 @@ import jp.ac.uec.daihinmin.card.*;
 public class Dashiosimi {
 	boolean showFlag = true;
 
-	//カードの交換
+	/**
+     * 交換カードを決定するメソッド．
+     * @return 交換相手に渡すカード集合
+     */
 	public static Cards requestingGivingCards(Cards hand, Rules rules, int rank) {
 		Cards result = Cards.EMPTY_CARDS;
 		// 手札を昇順にソート．たとえば，JOKER S2 HA ... D4 D3
 		Cards sortedHand = Cards.sort(hand);
-		// 渡すカードの枚数だけ，resultにカードを追加
-		for (int i = 0; i < Rules.sizeGivenCards(rules, rank); i++) {
-			result = result.add(
-					sortedHand.get(/* 平民より上か？ 注:07年度のルールでは平民以上の時のみ選ぶことができる */
-							Rules.heiminRank(rules) < rank ? sortedHand.size() - 1 - i /* 平民より下 */
-									: i /* 平民より上 */));
+		sortedHand = sortedHand.remove(Card.JOKER);
+		//単騎出ししかできないカード
+		Cards singleCards= removeCombinationMelds(sortedHand);
+		singleCards = Cards.sort(singleCards);
+		
+		int givenSize = Rules.sizeGivenCards(rules,rank);
+		//平民より上か？
+		int diffrank = Rules.heiminRank(rules)-rank;
+		if (diffrank > 0){
+			//３は渡さない
+			singleCards = singleCards.remove(Card.D3,Card.H3,Card.S3,Card.C3);
+			sortedHand = sortedHand.remove(Card.D3,Card.H3,Card.S3,Card.C3);
+			//８も渡さない
+			singleCards = singleCards.remove(Card.D8,Card.H8,Card.S8,Card.C8);
+			sortedHand = sortedHand.remove(Card.D8,Card.H8,Card.S8,Card.C8);
+			if(givenSize == 1){
+				if(singleCards.isEmpty()){
+					result = result.add(sortedHand.get(0));
+				}else{
+					result = result.add(singleCards.get(0));
+				}
+			}else if(givenSize == 2){
+				if(singleCards.isEmpty()){
+					result = result.add(sortedHand.get(0));
+					result = result.add(sortedHand.get(1));
+				}else if(singleCards.size() == 1){
+					result = result.add(singleCards.get(0));
+					result = result.add(sortedHand.get(0));
+				}else{
+					result = result.add(singleCards.get(0));
+					result = result.add(singleCards.get(1));
+				}
+			}
 		}
-		// たとえば，大貧民なら D3 D4
-		// たとえば，大富豪なら JOKER S2
+		
+		
+		// 渡すカードの枚数だけ，resultにカードを追加
+//		for (int i = 0; i < Rules.sizeGivenCards(rules, rank); i++) {
+//			result = result.add(
+//					sortedHand.get(/* 平民より上か？ 注:07年度のルールでは平民以上の時のみ選ぶことができる */
+//							Rules.heiminRank(rules) < rank ? sortedHand.size() - 1 - i /* 平民より下 */
+//									: i /* 平民より上 */));
+//		}
+//		// たとえば，大貧民なら D3 D4
+//		// たとえば，大富豪なら JOKER S2
 		return result;
 	}
 	
@@ -84,6 +128,101 @@ public class Dashiosimi {
         }else{
         	return melds.get(0);
         }
+	}
+	//HT
+	
+	public static ArrayList<MeldSet> parseMelds(Cards cards) {
+		Melds sequence = Melds.parseSequenceMelds(cards);
+		// group meld
+		MeldSet meldSet = parseGroupMelds(cards);
+		
+		if(sequence.isEmpty()) {
+			ArrayList<MeldSet> list = new ArrayList<MeldSet>();
+			list.add(meldSet);
+			return list;
+		} else {
+			Meld meld = sequence.get(0);
+
+			cards = cards.remove(meld.asCards());
+			
+			// sequence を採用した MeldSet のリスト
+			ArrayList<MeldSet> list = parseMelds(cards);
+			
+			// sequence をそれぞれの要素に加える
+			for(MeldSet set: list) {
+				set.sequence = set.sequence.add(meld);
+			}
+			
+			// sequence を採用しない  MeldSet もリストに加える
+			list.add(meldSet);
+			
+			return list;
+		}
+	}
+	 
+	
+	/**
+	 * GroupMelds を見つけ出す
+	 * 最大枚数の GoupMeld だけを見つける
+	 * @param cards
+	 * @return Groupが設定されたMeldSet 
+	 */
+	public static MeldSet parseGroupMelds(Cards cards) {
+		// JOKER があった場合、取り除く
+		cards = cards.remove(Card.JOKER);
+		
+		MeldSet set = new MeldSet();
+		
+		for(Card card: cards) {
+			int rank = card.rank().toInt() - 3;
+			int suit = card.suit().ordinal();
+			set.cards[suit][rank] = card;
+		}
+		
+		return set;
+	}
+	
+	/**
+	 * カード集合から、JOKER と組み合わせ役のカードを除く
+	 * @param cards 対象とするカード集合
+	 * @return 組み合わせ役が除かれたカード集合
+	 */
+	public static Cards removeCombinationMelds(Cards cards) {
+		// JOKER を除く
+		cards = cards.remove(Card.JOKER);
+
+		ArrayList<MeldSet> meldSets = parseMelds(cards);
+		
+		MeldSet min = meldSets.get(0);
+		int size = min.size();
+		
+		for(int i = 1; i < meldSets.size(); i++) {
+			int tmp = meldSets.get(i).size();
+			if(size > tmp) {
+				size = tmp;
+				min = meldSets.get(i);
+			}
+		}
+		
+		// 階段役を抽出
+		Melds sequenceMelds = min.sequence;
+		
+		// 階段役を取り除く
+		for(Meld meld: sequenceMelds) {
+			cards = cards.remove(meld.asCards());
+		}
+		
+		// グループ役を抽出 
+		Melds groupMelds = Melds.parseGroupMelds(cards);
+
+		// グループ役を取り除く
+		for(Meld meld: groupMelds) {
+			for(Card card: meld.asCards()) {
+				cards = cards.remove(card);
+			}
+		}
+
+		return cards;
 	}
 
 }
