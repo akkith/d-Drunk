@@ -13,7 +13,7 @@ public class PlayedCardList {
 	public Meld lastPlayedMeld = null;
 
 	// デバッグ用
-	boolean showFlag = true;
+	boolean showFlag = false;
 	boolean dammyCheck = false;
 	// デバッグ用カードリスト
 	public Cards dammyCards = null;
@@ -21,6 +21,7 @@ public class PlayedCardList {
 	// 全カードのリストを作成
 	public PlayedCardList() {
 		cardList = Card.values();
+		cardList = cardList.extract(Cards.JOKERS.not());
 		if (dammyCheck) {
 			dammyCards = cardList.extract(Cards.JOKERS.not());
 			dammyCards = dammyCards.extract(Cards.rankUnder(Rank.valueOf(10)));
@@ -51,10 +52,14 @@ public class PlayedCardList {
 		 */
 
 		// meldsList = Melds.parseMelds(cardList.extract(Cards.JOKERS.not()));
+		Melds singleMelds;
+		Melds groupMelds;
+		Melds sequenceMelds;
 		meldsList = Melds.EMPTY_MELDS;
-		Melds singleMelds = Melds.parseSingleMelds(cardList);
-		Melds groupMelds = Melds.parseGroupMelds(cardList);
-		Melds sequenceMelds = Melds.parseSequenceMelds(cardList);
+
+		singleMelds = Melds.parseSingleMelds(cardList);
+		groupMelds = Melds.parseGroupMelds(cardList);
+		sequenceMelds = Melds.parseSequenceMelds(cardList);
 		meldsList = meldsList.add(singleMelds);
 		meldsList = meldsList.add(groupMelds);
 		meldsList = meldsList.add(sequenceMelds);
@@ -62,21 +67,19 @@ public class PlayedCardList {
 		if (dammyCheck) {
 			// meldsList = Melds.parseMelds(dammyCards);
 			meldsList = Melds.EMPTY_MELDS;
-			Melds singleMelds = Melds.parseSingleMelds(dammyCards);
-			Melds groupMelds = Melds.parseGroupMelds(dammyCards);
-			Melds sequenceMelds = Melds.parseSequenceMelds(dammyCards);
+			singleMelds = Melds.parseSingleMelds(dammyCards);
+			groupMelds = Melds.parseGroupMelds(dammyCards);
+			sequenceMelds = Melds.parseSequenceMelds(dammyCards);
 		}
 		meldsList = meldsList.add(singleMelds);
 		meldsList = meldsList.add(groupMelds);
 		meldsList = meldsList.add(sequenceMelds);
 
-	}
-
-	// meldsList = Melds.parseMelds(cardList);
-	/*
-	 * if(showFlag){ System.out.println("melds");
-	 * System.out.println(meldsList.toString()); }
-	 */
+		// meldsList = Melds.parseMelds(cardList);
+		/*
+		 * if(showFlag){ System.out.println("melds");
+		 * System.out.println(meldsList.toString()); }
+		 */
 	}
 
 	public void setLastPlayedMeld(Meld meld) {
@@ -109,7 +112,7 @@ public class PlayedCardList {
 		}
 		Melds melds = meldsList
 				.extract(Melds.typeOf(meld.type()).and(Melds.sizeOf(meld.asCards().size()).and(Melds.rankOf(next_rank)
-						.or(order == Order.NORMAL ? Melds.rankUnder(next_rank) : Melds.rankOver(next_rank)))));
+						.or(order == Order.NORMAL ? Melds.rankOver(next_rank) : Melds.rankUnder(next_rank) ))));
 
 		return melds.size();
 	}

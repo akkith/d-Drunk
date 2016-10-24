@@ -45,6 +45,11 @@ public class PatternMake {
 		}while(!sequence.isEmpty());
 		
 		//それでも余ったカードを単騎にする
+		/*
+		if( tHands.contains(Card.JOKER) ){
+			makedMelds = makedMelds.add(Melds.createSingleMeldJoker(Suit.SPADES,order == Order.NORMAL?Rank.JOKER_HIGHEST:Rank.JOKER_LOWEST)) );
+		}
+		*/
 		makedMelds = makedMelds.add(Melds.parseSingleMelds(tHands));
 		
 		if(showFlag){

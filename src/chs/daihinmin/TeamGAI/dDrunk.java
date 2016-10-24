@@ -15,6 +15,9 @@ public class dDrunk extends BotSkeleton {
 	PlayedCardList cardList;
 
 	boolean isGameStart = false;
+	
+	//時間計測用
+	boolean timerFlag = true;
 
 	/*
 	 * public Cards requestingGivingCards(){
@@ -44,6 +47,8 @@ public class dDrunk extends BotSkeleton {
 	}
 
 	public Meld requestingPlay() {
+		long start = 0, end = 0; //時間計測用
+		if(timerFlag) start = System.currentTimeMillis();
 		//初回のみ手札のカードを未登場カードリストから除く
 		if(!isGameStart){
 			isGameStart = true;
@@ -67,10 +72,15 @@ public class dDrunk extends BotSkeleton {
 		
 		//return defaultStrategy.requestingPlay(melds, place, rules);
 		cardList.updateList(playMeld);
-		cardList.showCards();
+		//cardList.showCards();
 		
 		//自分の使ったカードを記録
 		cardList.setLastPlayedMeld(playMeld);
+		
+		if(timerFlag){
+			end = System.currentTimeMillis();
+			System.out.println((end - start)  + "ms");
+		}
 		return playMeld;
 	}
 

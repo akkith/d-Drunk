@@ -15,6 +15,7 @@ public class SecondStage {
 	 */
 
 	HashMap<Meld, Double> meldHash = new HashMap<Meld, Double>();
+	public boolean showFlag = false;
 
 	public Meld requestingPlay(Melds melds, Place place, Rules rules, PlayedCardList pList) {
 		double nomalValue = 0;
@@ -29,6 +30,11 @@ public class SecondStage {
 
 		// 場がからのとき
 		if (place.isRenew()) {
+			if(showFlag){
+				System.out.println("place is clean");
+			}
+			if(melds.size() == 1) return melds.get(0);
+			
 			// 革命できてそのほうが強そうならやる
 			Melds canRevol = melds.extract(Melds.GROUPS.and(Melds.sizeOver(3)).or(Melds.SEQUENCES.and(Melds.sizeOver(4))));
 			if (!canRevol.isEmpty()) {
@@ -40,11 +46,15 @@ public class SecondStage {
 			// そうでなければスペ３単騎以外の弱いのを出す
 			Melds playMelds = melds.extract(Melds.SINGLES
 					.and(Melds.rankOf(Rank.valueOf(3)))
-					.and(Melds.suitsOf(Suits.valueOf(Suit.SPADES))));
+					.and(Melds.suitsOf(Suits.valueOf(Suit.SPADES)))
+					.not());
 			if(playMelds.isEmpty()) return PASS;
 			return playMelds.extract(Melds.MIN_RANK).get(0);
 		} else {
 			// 場にカードが入っているとき
+			if(showFlag){
+				System.out.println("place is not clean");
+			}
 			if (place.lastMeld() == pList.lastPlayedMeld) {
 				// 最後に出したのが自分ならパス
 				return PASS;
@@ -63,18 +73,38 @@ public class SecondStage {
 
 			// 場に出されている役の,タイプ,枚数,ランク,革命中か否か,に合わせて,「出すことができる」候補に絞る
 			melds = melds.extract(Melds.typeOf(place.type()).and(Melds.sizeOf(place.size())));
-
 			melds = melds.extract(Melds.rankOf(next_rank)
 					.or(place.order() == Order.NORMAL ? Melds.rankOver(next_rank) : Melds.rankUnder(next_rank)));
 			//ここまでいつもの
 			if(melds.isEmpty()) return PASS;
 			Melds.sort(melds);
 			
+			if(showFlag){
+				System.out.println("value check");
+				System.out.println("meld point : " + melds.get(0).toString() + " : " + meldHash.get(melds.get(0)) );
+				for(Meld m : melds){
+					System.out.println("meld: " + m.toString() + " : " + meldHash.get(m) );
+				}
+				System.out.println("nomalValue : " + nomalValue);
+			}
+			
 			// 弱いのが出せるなら出す
-			if(meldHash.get(melds.get(0)) > nomalValue){
+			if(meldHash.get(melds.get(0)) >= nomalValue){
 				return melds.get(0);
 			}
-			// 強いのが出せるなら出す
+			// 強いのが出せるなら考えて出す
+			//強いなかの平均以下なら出す
+			double averageValue = 0;
+			int cnt = 0;
+			for(Meld m : melds){
+				averageValue += meldHash.get(m);
+				cnt++;
+			}
+			averageValue /= cnt;
+			if(meldHash.get(melds.get(0)) >= averageValue){
+				return melds.get(0);
+			}
+			
 			return PASS;
 		}
 		
