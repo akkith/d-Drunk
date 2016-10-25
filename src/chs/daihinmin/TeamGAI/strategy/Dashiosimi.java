@@ -1,4 +1,4 @@
-package chs.daihinmin.TeamGAI.strategy;
+ package chs.daihinmin.TeamGAI.strategy;
 
 import static jp.ac.uec.daihinmin.card.MeldFactory.PASS;
 import static jp.ac.uec.daihinmin.card.MeldFactory.createSingleMeldJoker;

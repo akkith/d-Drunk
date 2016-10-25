@@ -5,22 +5,104 @@ import static jp.ac.uec.daihinmin.card.MeldFactory.*;
 import jp.ac.uec.daihinmin.card.*;
 
 public class PlayedCardList {
+	// 自分の持っていないカード集合
 	Cards cardList = null;
+	// 自分の持っていないカードでできる役集合
+	Melds meldsList = null;
+	// 最後に自分が出した役
+	public Meld lastPlayedMeld = null;
+
+	// デバッグ用
+	boolean showFlag = false;
+	boolean dammyCheck = false;
+	// デバッグ用カードリスト
+	public Cards dammyCards = null;
 
 	// 全カードのリストを作成
 	public PlayedCardList() {
 		cardList = Card.values();
+		cardList = cardList.extract(Cards.JOKERS.not());
+		if (dammyCheck) {
+			dammyCards = cardList.extract(Cards.JOKERS.not());
+			dammyCards = dammyCards.extract(Cards.rankUnder(Rank.valueOf(10)));
+		}
 	}
 
 	// 使ったカードを抜く
 	public void updateList(Meld meld) {
 		cardList = cardList.remove(meld.asCards());
+		if (dammyCheck) {
+			dammyCards = dammyCards.remove(meld.asCards());
+		}
+	}
+
+	public void updateList(Cards cards) {
+		cardList = cardList.remove(cards);
+		if (dammyCheck) {
+			dammyCards = dammyCards.remove(cards);
+		}
+	}
+
+	// 持ってい無いカードでの役集合生成
+	public void updateMeldsList() {
+		/*
+		 * if(showFlag){ if(!dammyCheck) System.out.println("Cars : " +
+		 * cardList.toString()); else System.out.println("Cars : " +
+		 * dammyCards.toString()); }
+		 */
+
+		// meldsList = Melds.parseMelds(cardList.extract(Cards.JOKERS.not()));
+		Melds singleMelds;
+		Melds groupMelds;
+		Melds sequenceMelds;
+		meldsList = Melds.EMPTY_MELDS;
+
+		singleMelds = Melds.parseSingleMelds(cardList);
+		groupMelds = Melds.parseGroupMelds(cardList);
+		sequenceMelds = Melds.parseSequenceMelds(cardList);
+		meldsList = meldsList.add(singleMelds);
+		meldsList = meldsList.add(groupMelds);
+		meldsList = meldsList.add(sequenceMelds);
+
+		if (dammyCheck) {
+			// meldsList = Melds.parseMelds(dammyCards);
+			meldsList = Melds.EMPTY_MELDS;
+			singleMelds = Melds.parseSingleMelds(dammyCards);
+			groupMelds = Melds.parseGroupMelds(dammyCards);
+			sequenceMelds = Melds.parseSequenceMelds(dammyCards);
+		}
+		meldsList = meldsList.add(singleMelds);
+		meldsList = meldsList.add(groupMelds);
+		meldsList = meldsList.add(sequenceMelds);
+
+		// meldsList = Melds.parseMelds(cardList);
+		/*
+		 * if(showFlag){ System.out.println("melds");
+		 * System.out.println(meldsList.toString()); }
+		 */
+	}
+
+	public void setLastPlayedMeld(Meld meld) {
+		lastPlayedMeld = meld;
+	}
+
+	public double calcMeldsVps(Melds melds, Rules rules, Order order) {
+		int size = melds.size();
+		double value = 0;
+		for (Meld meld : melds) {
+			value += calcMeldValue(meld, rules, order);
+		}
+		return value / melds.size();
 	}
 
 	// 引数の役より強い役の数を返す
 	public int calcMeldValue(Meld meld, Rules rules, Order order) {
-		Melds melds = Melds.parseMelds(cardList);
-				Rank next_rank;
+		/*
+		 * if(showFlag){ System.out.println("calcMeldValue in Meld :" +
+		 * meld.toString()); System.out.println("melds type :" + meld.type()); }
+		 */
+		// Melds melds;
+		Rank next_rank;
 		try {
 			next_rank = meld.type() == Meld.Type.SEQUENCE
 					? rules.nextRankSequence(meld.rank(), meld.asCards().size(), order)
@@ -28,10 +110,10 @@ public class PlayedCardList {
 		} catch (IllegalArgumentException e) {
 			return 0;
 		}
-		melds = melds.extract(Melds.typeOf(meld.type()).and(Melds.sizeOf(meld.asCards().size())
-				.and(Melds.rankOf(next_rank).or(order == Order.NORMAL ? Melds.rankUnder(next_rank)
-						: Melds.rankOver(next_rank)))));
-		
+		Melds melds = meldsList
+				.extract(Melds.typeOf(meld.type()).and(Melds.sizeOf(meld.asCards().size()).and(Melds.rankOf(next_rank)
+						.or(order == Order.NORMAL ? Melds.rankOver(next_rank) : Melds.rankUnder(next_rank) ))));
+
 		return melds.size();
 	}
 
