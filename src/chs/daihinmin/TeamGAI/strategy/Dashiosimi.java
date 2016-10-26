@@ -24,7 +24,9 @@ public class Dashiosimi {
 		Cards sortedHand = Cards.sort(hand);
 		sortedHand = sortedHand.remove(Card.JOKER);
 		//単騎出ししかできないカード
-		Cards singleCards= removeCombinationMelds(sortedHand);
+		sortedHand= sortedHand.remove(Melds.project(Melds.parseSequenceMelds(sortedHand))); 
+		sortedHand = sortedHand.remove(Melds.project(Melds.parseGroupMelds(sortedHand))); 
+		Cards singleCards = sortedHand;
 		singleCards = Cards.sort(singleCards);
 		
 		int givenSize = Rules.sizeGivenCards(rules,rank);
@@ -70,6 +72,7 @@ public class Dashiosimi {
 		return result;
 	}
 	
+	//HT
 	//現状出し惜しみは役の作り方で再現しているため、ここはサンプルとほとんど同じ
 	public Meld requestingPlay(Melds melds, Place place, Rules rules) {
 		// 場に何のカードも出されていなければ,
@@ -131,98 +134,98 @@ public class Dashiosimi {
 	}
 	//HT
 	
-	public static ArrayList<MeldSet> parseMelds(Cards cards) {
-		Melds sequence = Melds.parseSequenceMelds(cards);
-		// group meld
-		MeldSet meldSet = parseGroupMelds(cards);
-		
-		if(sequence.isEmpty()) {
-			ArrayList<MeldSet> list = new ArrayList<MeldSet>();
-			list.add(meldSet);
-			return list;
-		} else {
-			Meld meld = sequence.get(0);
-
-			cards = cards.remove(meld.asCards());
-			
-			// sequence を採用した MeldSet のリスト
-			ArrayList<MeldSet> list = parseMelds(cards);
-			
-			// sequence をそれぞれの要素に加える
-			for(MeldSet set: list) {
-				set.sequence = set.sequence.add(meld);
-			}
-			
-			// sequence を採用しない  MeldSet もリストに加える
-			list.add(meldSet);
-			
-			return list;
-		}
-	}
-	 
-	
-	/**
-	 * GroupMelds を見つけ出す
-	 * 最大枚数の GoupMeld だけを見つける
-	 * @param cards
-	 * @return Groupが設定されたMeldSet 
-	 */
-	public static MeldSet parseGroupMelds(Cards cards) {
-		// JOKER があった場合、取り除く
-		cards = cards.remove(Card.JOKER);
-		
-		MeldSet set = new MeldSet();
-		
-		for(Card card: cards) {
-			int rank = card.rank().toInt() - 3;
-			int suit = card.suit().ordinal();
-			set.cards[suit][rank] = card;
-		}
-		
-		return set;
-	}
-	
-	/**
-	 * カード集合から、JOKER と組み合わせ役のカードを除く
-	 * @param cards 対象とするカード集合
-	 * @return 組み合わせ役が除かれたカード集合
-	 */
-	public static Cards removeCombinationMelds(Cards cards) {
-		// JOKER を除く
-		cards = cards.remove(Card.JOKER);
-
-		ArrayList<MeldSet> meldSets = parseMelds(cards);
-		
-		MeldSet min = meldSets.get(0);
-		int size = min.size();
-		
-		for(int i = 1; i < meldSets.size(); i++) {
-			int tmp = meldSets.get(i).size();
-			if(size > tmp) {
-				size = tmp;
-				min = meldSets.get(i);
-			}
-		}
-		
-		// 階段役を抽出
-		Melds sequenceMelds = min.sequence;
-		
-		// 階段役を取り除く
-		for(Meld meld: sequenceMelds) {
-			cards = cards.remove(meld.asCards());
-		}
-		
-		// グループ役を抽出 
-		Melds groupMelds = Melds.parseGroupMelds(cards);
-
-		// グループ役を取り除く
-		for(Meld meld: groupMelds) {
-			for(Card card: meld.asCards()) {
-				cards = cards.remove(card);
-			}
-		}
-
-		return cards;
-	}
+//	public static ArrayList<MeldSet> parseMelds(Cards cards) {
+//		Melds sequence = Melds.parseSequenceMelds(cards);
+//		// group meld
+//		MeldSet meldSet = parseGroupMelds(cards);
+//		
+//		if(sequence.isEmpty()) {
+//			ArrayList<MeldSet> list = new ArrayList<MeldSet>();
+//			list.add(meldSet);
+//			return list;
+//		} else {
+//			Meld meld = sequence.get(0);
+//
+//			cards = cards.remove(meld.asCards());
+//			
+//			// sequence を採用した MeldSet のリスト
+//			ArrayList<MeldSet> list = parseMelds(cards);
+//			
+//			// sequence をそれぞれの要素に加える
+//			for(MeldSet set: list) {
+//				set.sequence = set.sequence.add(meld);
+//			}
+//			
+//			// sequence を採用しない  MeldSet もリストに加える
+//			list.add(meldSet);
+//			
+//			return list;
+//		}
+//	}
+//	 
+//	
+//	/**
+//	 * GroupMelds を見つけ出す
+//	 * 最大枚数の GoupMeld だけを見つける
+//	 * @param cards
+//	 * @return Groupが設定されたMeldSet 
+//	 */
+//	public static MeldSet parseGroupMelds(Cards cards) {
+//		// JOKER があった場合、取り除く
+//		cards = cards.remove(Card.JOKER);
+//		
+//		MeldSet set = new MeldSet();
+//		
+//		for(Card card: cards) {
+//			int rank = card.rank().toInt() - 3;
+//			int suit = card.suit().ordinal();
+//			set.cards[suit][rank] = card;
+//		}
+//		
+//		return set;
+//	}
+//	
+//	/**
+//	 * カード集合から、JOKER と組み合わせ役のカードを除く
+//	 * @param cards 対象とするカード集合
+//	 * @return 組み合わせ役が除かれたカード集合
+//	 */
+//	public static Cards removeCombinationMelds(Cards cards) {
+//		// JOKER を除く
+//		cards = cards.remove(Card.JOKER);
+//
+//		ArrayList<MeldSet> meldSets = parseMelds(cards);
+//		
+//		MeldSet min = meldSets.get(0);
+//		int size = min.size();
+//		
+//		for(int i = 1; i < meldSets.size(); i++) {
+//			int tmp = meldSets.get(i).size();
+//			if(size > tmp) {
+//				size = tmp;
+//				min = meldSets.get(i);
+//			}
+//		}
+//		
+//		// 階段役を抽出
+//		Melds sequenceMelds = min.sequence;
+//		
+//		// 階段役を取り除く
+//		for(Meld meld: sequenceMelds) {
+//			cards = cards.remove(meld.asCards());
+//		}
+//		
+//		// グループ役を抽出 
+//		Melds groupMelds = Melds.parseGroupMelds(cards);
+//
+//		// グループ役を取り除く
+//		for(Meld meld: groupMelds) {
+//			for(Card card: meld.asCards()) {
+//				cards = cards.remove(card);
+//			}
+//		}
+//
+//		return cards;
+//	}
 
 }
