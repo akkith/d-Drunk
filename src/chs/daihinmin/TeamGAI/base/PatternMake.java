@@ -1,7 +1,9 @@
 package chs.daihinmin.TeamGAI.base;
 
-import jp.ac.uec.daihinmin.card.MeldFactory.*;
+import jp.ac.uec.daihinmin.*;
+import static jp.ac.uec.daihinmin.card.MeldFactory.*;
 import jp.ac.uec.daihinmin.card.*;
+import jp.ac.uec.daihinmin.card.Rank;
 //import jp.ac.uec.daihinmin.card.Melds.*;
 
 public class PatternMake {
@@ -11,13 +13,18 @@ public class PatternMake {
 		//do nothing
 	}
 	
-	public Melds patMake(Cards hands){
+	public Melds patMake(Cards hands, Place place){
 		Cards tHands = hands;
 		if(showFlag){
 			System.out.println("tHand is :" + tHands.toString());
 		}
 		//作ったペアはここにしまう
 		Melds makedMelds = Melds.EMPTY_MELDS;
+		
+		//ジョーカーを持っておらずスペードの３があれば役として登録
+		if(tHands.contains(Card.S3) && !tHands.contains(Card.JOKER)){
+			makedMelds = makedMelds.add(createSingleMeld(Card.S3));
+		}
 		
 		//size が大きい順にペアを作っていく
 		for(int i = 4; i >= 2; i--){
@@ -44,12 +51,16 @@ public class PatternMake {
 			
 		}while(!sequence.isEmpty());
 		
-		//それでも余ったカードを単騎にする
-		/*
+		
+		//ジョーカーを最強のカードにしておく
 		if( tHands.contains(Card.JOKER) ){
-			makedMelds = makedMelds.add(Melds.createSingleMeldJoker(Suit.SPADES,order == Order.NORMAL?Rank.JOKER_HIGHEST:Rank.JOKER_LOWEST)) );
+			Suit suit = place.suits().size()==0?Suit.SPADES:place.suits().get(0);
+			Rank jRunk = place.order() == Order.NORMAL?Rank.JOKER_HIGHEST:Rank.JOKER_LOWEST;
+			makedMelds = makedMelds.add(createSingleMeldJoker(suit, jRunk));
+			tHands = tHands.remove(Card.JOKER);
 		}
-		*/
+		
+		//それでも余ったカードを単騎にする
 		makedMelds = makedMelds.add(Melds.parseSingleMelds(tHands));
 		
 		if(showFlag){

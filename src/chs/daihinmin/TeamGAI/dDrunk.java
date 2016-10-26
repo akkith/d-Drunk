@@ -15,8 +15,8 @@ public class dDrunk extends BotSkeleton {
 	PlayedCardList cardList;
 
 	boolean isGameStart = false;
-	
-	//時間計測用
+
+	// 時間計測用
 	boolean timerFlag = true;
 
 	/*
@@ -47,39 +47,39 @@ public class dDrunk extends BotSkeleton {
 	}
 
 	public Meld requestingPlay() {
-		long start = 0, end = 0; //時間計測用
-		if(timerFlag) start = System.currentTimeMillis();
-		//初回のみ手札のカードを未登場カードリストから除く
-		if(!isGameStart){
+		long start = 0, end = 0; // 時間計測用
+		if (timerFlag)
+			start = System.currentTimeMillis();
+		// 初回のみ手札のカードを未登場カードリストから除く
+		if (!isGameStart) {
 			isGameStart = true;
 			cardList.updateList(this.hand());
 		}
-		
-		//現在のカード状況で考えられる役を登録
+
+		// 現在のカード状況で考えられる役を登録
 		cardList.updateMeldsList();
-		
-		// 役の作成
-		//Melds melds = Melds.parseMelds(this.hand());
-		Melds melds = patMaker.patMake(this.hand());
+
 		// 場の状況
-		Place place = this.place();								
+		Place place = this.place();
 		// ルール
 		Rules rules = this.rules();
+		// 役の作成
+		Melds melds = patMaker.patMake(this.hand(), place);
 
-		//提出用の役
+		// 提出用の役
 		Meld playMeld = secStage.requestingPlay(melds, place, rules, cardList);
-		//Meld playMeld = nomalStrategy.requestingPlay(melds, place, rules);
-		
-		//return defaultStrategy.requestingPlay(melds, place, rules);
+		// Meld playMeld = nomalStrategy.requestingPlay(melds, place, rules);
+
+		// return defaultStrategy.requestingPlay(melds, place, rules);
 		cardList.updateList(playMeld);
-		//cardList.showCards();
-		
-		//自分の使ったカードを記録
+		// cardList.showCards();
+
+		// 自分の使ったカードを記録
 		cardList.setLastPlayedMeld(playMeld);
-		
-		if(timerFlag){
+
+		if (timerFlag) {
 			end = System.currentTimeMillis();
-			System.out.println((end - start)  + "ms");
+			System.out.println((end - start) + "ms");
 		}
 		return playMeld;
 	}

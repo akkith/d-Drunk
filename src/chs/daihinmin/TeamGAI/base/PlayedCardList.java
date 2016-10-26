@@ -11,6 +11,8 @@ public class PlayedCardList {
 	Melds meldsList = null;
 	// 最後に自分が出した役
 	public Meld lastPlayedMeld = null;
+	//ジョーカーが出たか否か
+	public boolean jokerFlag = true;
 
 	// デバッグ用
 	boolean showFlag = false;
@@ -31,6 +33,9 @@ public class PlayedCardList {
 	// 使ったカードを抜く
 	public void updateList(Meld meld) {
 		cardList = cardList.remove(meld.asCards());
+		if(meld.asCards().contains(Card.JOKER)){
+			jokerFlag = false;
+		}
 		if (dammyCheck) {
 			dammyCards = dammyCards.remove(meld.asCards());
 		}
@@ -38,6 +43,9 @@ public class PlayedCardList {
 
 	public void updateList(Cards cards) {
 		cardList = cardList.remove(cards);
+		if(cards.contains(Card.JOKER)){
+			jokerFlag = false;
+		}
 		if (dammyCheck) {
 			dammyCards = dammyCards.remove(cards);
 		}
