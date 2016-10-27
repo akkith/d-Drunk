@@ -16,6 +16,7 @@ import jp.ac.uec.daihinmin.card.*;
 
 import chs.daihinmin.TeamGAI.strategy.*;
 import chs.daihinmin.TeamGAI.base.*;
+import static jp.ac.uec.daihinmin.card.MeldFactory.createSingleMeld;
 
 
 
@@ -29,15 +30,23 @@ public  class FirstStage {
 	 */
 
 	public static Meld requestingPlay(Melds melds, Place place, Rules rules) {
-		// 場に何も出されてなければ
+
 		boolean showFlag = true;
-		
+		//シングルJOKERにスペ３出す
+		if(place.hasJoker() && place.type() == Meld.Type.SINGLE && melds.contains(createSingleMeld(Card.S3))){
+			return createSingleMeld(Card.S3);			
+		}
+		// 場に何も出されてなければ
 		if (place.isRenew() && !place.isReverse()) {
 			//未革命状態の時
+			Melds.sort(melds);
 			Melds mMelds = melds;
 			//階段の役を保持し、除く
 			Melds qMelds = melds.extract(Melds.SEQUENCES);
 			melds = melds.remove(qMelds);
+			//階段役から３とJACK以上を抜きさらに階段を作る
+			qMelds = qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+			qMelds = qMelds.extract(Melds.SEQUENCES);
 			//n枚組の役を保持し、除く
 			//qMelds =  qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 			Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
@@ -50,14 +59,14 @@ public  class FirstStage {
 					/*&& sMelds.etract(Melds.rankOf(mMelds.extract(Melds.MAX_RANK)))  && melds.get(0).rank() == Rank.EIGHT */) {
 				return sMelds.get(0);
 			} else if (!qMelds.isEmpty() /*&& !qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)).isEmpty()*/) {
-				for ( int i=0 ; i<qMelds.size();i++){
-					//Melds qqMelds = qMelds.get(i);
-					if (3 < qMelds.get(i).rank().toInt() && qMelds.get(i).rank().toInt() < 11 /*.contains((Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK))))*/){
-						return PASS;
-					}else{
-						return qMelds.get(0);
-					}
-				}
+//				for ( int i=0 ; i<qMelds.size();i++){
+//					//Melds qqMelds = qMelds.get(i);
+//					if (3 < qMelds.get(i).rank().toInt() && qMelds.get(i).rank().toInt() < 11 /*.contains((Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK))))*/){
+//						return PASS;
+//					}else{
+//						return qMelds.get(0);
+//					}
+//				}
 				return qMelds.get(0);
 				
 			}else{ 
@@ -69,7 +78,7 @@ public  class FirstStage {
 			}
 		} else if(place.isRenew() && place.isReverse()){
 			//革命状態の時、３と２を残す
-			Melds.sort(melds,Comparator.reverseOrder());
+			Melds.sort(melds);
 			Melds mMelds = melds;
 			//出し惜しみするために、３と２以外のを残す
 			//Melds dMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
@@ -82,39 +91,51 @@ public  class FirstStage {
 			//n枚組の役を保持し、除く
 			//qMelds =  qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 			//Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
-			Melds gMelds = melds.extract(Melds.GROUPS);
-			melds = melds.remove(gMelds);
 			//n枚組の役から３と２を抜きさらにn枚組を作る
-			gMelds = gMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+			Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+			gMelds = melds.extract(Melds.GROUPS);
+			melds = melds.remove(gMelds);
+
+			//革命できる４枚カードを抜く
+			gMelds = gMelds.extract(Melds.sizeUnder(4));
 			gMelds = gMelds.extract(Melds.GROUPS);
+			
 			//残った役をシングルに
 			Melds sMelds = melds.extract(Melds.SINGLES);
 			//singleが４以上ACEいかなら出す
 			if (!sMelds.isEmpty() /*&& (Rank.FOUR.toInt() <= sMelds.get(0).rank().toInt() && sMelds.get(0).rank().toInt() <= Rank.KING.toInt())
-					&& sMelds.etract(Melds.rankOf(mMelds.extract(Melds.MAX_RANK)))  && melds.get(0).rank() == Rank.EIGHT */) {
-				return sMelds.get(0);
+					&& sMelds.extract(Melds.rankOf(mMelds.extract(Melds.MAX_RANK)))  && melds.get(0).rank() == Rank.EIGHT */) {
+				return sMelds.get(sMelds.size()-1);
 			} else if (!qMelds.isEmpty() /*&& !qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)).isEmpty()*/) {
-				for ( int i=0 ; i<qMelds.size();i++){
-					//Melds qqMelds = qMelds.get(i);
-					if (3 < qMelds.get(i).rank().toInt() && qMelds.get(i).rank().toInt() < 11 /*.contains((Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK))))*/){
-						return PASS;
-					}else{
-						return qMelds.get(0);
-					}
-				}
-				return qMelds.get(0);
+				//階段を出す
+//				for ( int i=0 ; i<qMelds.size();i++){
+//					//Melds qqMelds = qMelds.get(i);
+//					if (3 < qMelds.get(i).rank().toInt() && qMelds.get(i).rank().toInt() < 11 /*.contains((Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK))))*/){
+//						return PASS;
+//					}else{
+//						return qMelds.get(0);
+//					}
+//				}
+				return qMelds.get(qMelds.size()-1);
 				
 			}else{ 
+				//n枚組を出す
+				
 				if (!gMelds.isEmpty()) {
-					return gMelds.get(0);
+					return gMelds.get(gMelds.size()-1);
 				} else {
-					return mMelds.get(0);
+					return mMelds.get(mMelds.size()-1);
 				}
 			}
 			
 		
 		} else{
-		
+			
+			if (!place.isReverse()){
+				melds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+			}else{
+				melds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+			}
 			// 場が縛られている時
 			if (!place.lockedSuits().equals(Suits.EMPTY_SUITS)) {
 				// 場を縛っているスート集合に適合する役を抽出して,候補とする．
