@@ -4,6 +4,7 @@ import jp.ac.uec.daihinmin.player.*;
 import jp.ac.uec.daihinmin.*;
 import jp.ac.uec.daihinmin.card.*;
 import static jp.ac.uec.daihinmin.card.MeldFactory.PASS;
+import static jp.ac.uec.daihinmin.card.MeldFactory.createSingleMeld;
 
 import chs.daihinmin.TeamGAI.base.*;
 
@@ -18,6 +19,10 @@ public class SecondStage {
 	public boolean showFlag = false;
 
 	public Meld requestingPlay(Melds melds, Place place, Rules rules, PlayedCardList pList) {
+		//スペードの３を持っていてジョーカーシングルが来たら出す
+		if(place.hasJoker() && place.type() == Meld.Type.SINGLE && melds.contains(createSingleMeld(Card.S3))){
+			return createSingleMeld(Card.S3);			
+		}
 		double nomalValue = 0;
 		// 手札の役の点数表を作る
 		meldHash.clear();
@@ -44,12 +49,19 @@ public class SecondStage {
 				}
 			}
 			// そうでなければスペ３単騎以外の弱いのを出す
-			Melds playMelds = melds.extract(Melds.SINGLES
+			Melds playMelds = melds;
+			if(pList.jokerFlag){
+				playMelds = melds.extract(Melds.SINGLES
 					.and(Melds.rankOf(Rank.valueOf(3)))
 					.and(Melds.suitsOf(Suits.valueOf(Suit.SPADES)))
 					.not());
+			}
 			if(playMelds.isEmpty()) return PASS;
-			return playMelds.extract(Melds.MIN_RANK).get(0);
+			if(place.order() == Order.NORMAL){
+				return playMelds.extract(Melds.MIN_RANK).get(0);
+			}else{
+				return playMelds.extract(Melds.MAX_RANK).get(0);
+			}
 		} else {
 			// 場にカードが入っているとき
 			if(showFlag){
