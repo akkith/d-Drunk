@@ -31,13 +31,20 @@ public  class FirstStage {
 	public static Meld requestingPlay(Melds melds, Place place, Rules rules) {
 		// 場に何も出されてなければ
 		boolean showFlag = true;
-		if (place.isRenew()) {
+		
+		if (place.isRenew() && !place.isReverse()) {
+			//未革命状態の時
 			Melds mMelds = melds;
-			Melds sMelds = melds.extract(Melds.SINGLES);
+			//階段の役を保持し、除く
 			Melds qMelds = melds.extract(Melds.SEQUENCES);
+			melds = melds.remove(qMelds);
+			//n枚組の役を保持し、除く
 			//qMelds =  qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 			Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 			gMelds = gMelds.extract(Melds.GROUPS);
+			melds = melds.remove(gMelds);
+			//残った役をシングルに
+			Melds sMelds = melds.extract(Melds.SINGLES);
 			// singleが４以上１３以下なら出す（８は要検討）、
 			if (!sMelds.isEmpty() && (Rank.FOUR.toInt() <= sMelds.get(0).rank().toInt() && sMelds.get(0).rank().toInt() <= Rank.KING.toInt())
 					/*&& sMelds.etract(Melds.rankOf(mMelds.extract(Melds.MAX_RANK)))  && melds.get(0).rank() == Rank.EIGHT */) {
@@ -60,7 +67,54 @@ public  class FirstStage {
 					return mMelds.get(0);
 				}
 			}
-		} else {
+		} else if(place.isRenew() && place.isReverse()){
+			//革命状態の時、３と２を残す
+			Melds.sort(melds,Comparator.reverseOrder());
+			Melds mMelds = melds;
+			//出し惜しみするために、３と２以外のを残す
+			//Melds dMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+			//階段の役を保持し、除く
+			Melds qMelds = melds.extract(Melds.SEQUENCES);
+			melds = melds.remove(qMelds);
+			//階段役から３と２を抜きさらに階段を作る
+			qMelds = qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+			qMelds = qMelds.extract(Melds.SEQUENCES);
+			//n枚組の役を保持し、除く
+			//qMelds =  qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+			//Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+			Melds gMelds = melds.extract(Melds.GROUPS);
+			melds = melds.remove(gMelds);
+			//n枚組の役から３と２を抜きさらにn枚組を作る
+			gMelds = gMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+			gMelds = gMelds.extract(Melds.GROUPS);
+			//残った役をシングルに
+			Melds sMelds = melds.extract(Melds.SINGLES);
+			//singleが４以上ACEいかなら出す
+			if (!sMelds.isEmpty() /*&& (Rank.FOUR.toInt() <= sMelds.get(0).rank().toInt() && sMelds.get(0).rank().toInt() <= Rank.KING.toInt())
+					&& sMelds.etract(Melds.rankOf(mMelds.extract(Melds.MAX_RANK)))  && melds.get(0).rank() == Rank.EIGHT */) {
+				return sMelds.get(0);
+			} else if (!qMelds.isEmpty() /*&& !qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)).isEmpty()*/) {
+				for ( int i=0 ; i<qMelds.size();i++){
+					//Melds qqMelds = qMelds.get(i);
+					if (3 < qMelds.get(i).rank().toInt() && qMelds.get(i).rank().toInt() < 11 /*.contains((Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK))))*/){
+						return PASS;
+					}else{
+						return qMelds.get(0);
+					}
+				}
+				return qMelds.get(0);
+				
+			}else{ 
+				if (!gMelds.isEmpty()) {
+					return gMelds.get(0);
+				} else {
+					return mMelds.get(0);
+				}
+			}
+			
+		
+		} else{
+		
 			// 場が縛られている時
 			if (!place.lockedSuits().equals(Suits.EMPTY_SUITS)) {
 				// 場を縛っているスート集合に適合する役を抽出して,候補とする．
