@@ -69,9 +69,13 @@ public class dDrunk extends BotSkeleton {
 		Melds melds = patMaker.patMake(this.hand(), place);
 
 		//提出用の役
-		//Meld playMeld = FirstStage.requestingPlay(melds, place, rules);
-
-		Meld playMeld = secStage.requestingPlay(melds, place, rules, cardList);
+		Meld playMeld = FirstStage.requestingPlay(melds,place,rules);
+//		if (this.hand().size() >  6 ){
+//			Meld playMeld = FirstStage.requestingPlay(melds, place, rules);
+//			cardList.updateList(playMeld);
+//		}else{
+//			Meld playMeld = secStage.requestingPlay(melds, place, rules, cardList);
+//		}
 		//Meld playMeld = nomalStrategy.requestingPlay(melds, place, rules);
 		
 		//return defaultStrategy.requestingPlay(melds, place, rules);

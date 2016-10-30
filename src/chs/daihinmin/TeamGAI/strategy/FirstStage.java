@@ -53,10 +53,11 @@ public  class FirstStage {
 			gMelds = gMelds.extract(Melds.GROUPS);
 			melds = melds.remove(gMelds);
 			//残った役をシングルに
-			Melds sMelds = melds.extract(Melds.SINGLES);
+			Melds sMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+			sMelds = sMelds.extract(Melds.SINGLES);
 			// singleが４以上１３以下なら出す（８は要検討）、
-			if (!sMelds.isEmpty() && (Rank.FOUR.toInt() <= sMelds.get(0).rank().toInt() && sMelds.get(0).rank().toInt() <= Rank.KING.toInt())
-					/*&& sMelds.etract(Melds.rankOf(mMelds.extract(Melds.MAX_RANK)))  && melds.get(0).rank() == Rank.EIGHT */) {
+			if (!sMelds.isEmpty() /*&& (Rank.FOUR.toInt() <= sMelds.get(0).rank().toInt() && sMelds.get(0).rank().toInt() <= Rank.KING.toInt())
+					&& sMelds.etract(Melds.rankOf(mMelds.extract(Melds.MAX_RANK)))  && melds.get(0).rank() == Rank.EIGHT */) {
 				return sMelds.get(0);
 			} else if (!qMelds.isEmpty() /*&& !qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)).isEmpty()*/) {
 //				for ( int i=0 ; i<qMelds.size();i++){
