@@ -11,13 +11,19 @@ public class dDrunk extends BotSkeleton {
 	Default defaultStrategy = new Default();
 	Dashiosimi nomalStrategy = new Dashiosimi();
 	SecondStage secStage = new SecondStage();
+	FinalStage finStage = new FinalStage();
 	PatternMake patMaker = new PatternMake();
-	//HT
+	// HT
 	FirstStage firstStage = new FirstStage();
 	PlayedCardList cardList;
 
+	// シークエンス記録変数
+	int seqNum = 0;
+	// 最初の一回の設定用
 	boolean isGameStart = false;
 
+	//デバッグ表示用
+	boolean showFlag = true;
 	// 時間計測用
 	boolean timerFlag = true;
 
@@ -30,6 +36,8 @@ public class dDrunk extends BotSkeleton {
 		super.gameStarted();
 		cardList = new PlayedCardList();
 		isGameStart = false;
+		// 年のため二回目
+		seqNum = 0;
 	}
 
 	public void played(Integer num, Meld playedMeld) {
@@ -49,6 +57,9 @@ public class dDrunk extends BotSkeleton {
 	}
 
 	public Meld requestingPlay() {
+		if(showFlag){
+			System.out.println("Player:" + this.number());
+		}
 		long start = 0, end = 0; // 時間計測用
 		if (timerFlag)
 			start = System.currentTimeMillis();
@@ -66,14 +77,34 @@ public class dDrunk extends BotSkeleton {
 		// ルール
 		Rules rules = this.rules();
 		// 役の作成
-		Melds melds = patMaker.patMake(this.hand(), place);
-
+		//Melds melds = patMaker.patMake(this.hand(), place);
+		Melds melds;
+		Meld playMeld = PASS;
 		//提出用の役
 		//Meld playMeld = FirstStage.requestingPlay(melds, place, rules);
-
-		Meld playMeld = secStage.requestingPlay(melds, place, rules, cardList);
-		//Meld playMeld = nomalStrategy.requestingPlay(melds, place, rules);
 		
+		if(seqNum == 0){
+			if(showFlag){
+				System.out.println("==sequence second==");
+			}
+			melds = patMaker.patMake(this.hand(), place);
+			playMeld = secStage.requestingPlay(melds, place, rules, cardList);
+			if(melds.size() <= 4 && playMeld != PASS){
+				++seqNum;
+			}
+		}else{
+			if(showFlag){
+				System.out.println("==sequence final==");
+			}
+			melds = patMaker.patMakeFinal(this.hand(), place, rules);
+			if(showFlag){
+				System.out.println(melds.toString());
+			}
+			if(melds == Melds.EMPTY_MELDS){
+				return PASS;
+			}
+			playMeld = finStage.requestingPlay(melds, place, rules, cardList);
+		}
 		//return defaultStrategy.requestingPlay(melds, place, rules);
 		
 		cardList.updateList(playMeld);
@@ -84,6 +115,7 @@ public class dDrunk extends BotSkeleton {
 
 		if (timerFlag) {
 			end = System.currentTimeMillis();
+			//cardList.showDetail();
 			System.out.println((end - start) + "ms");
 		}
 		return playMeld;
