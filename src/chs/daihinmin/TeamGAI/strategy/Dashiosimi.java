@@ -44,10 +44,12 @@ public class Dashiosimi {
 			singleCards = singleCards.remove(Card.D8,Card.H8,Card.S8,Card.C8);
 			sortedHand = sortedHand.remove(Card.D8,Card.H8,Card.S8,Card.C8);
 			if(givenSize == 1){
-				if(singleCards.isEmpty() && sortedHand.isEmpty()){
-					result = result.add(Hand.get(0));
-				}else if(sortedHand.isEmpty() && !sortedHand.isEmpty()){
-					result = result.add(sortedHand.get(0));
+				if(singleCards.isEmpty() /*&& sortedHand.isEmpty()*/){
+					if(!sortedHand.isEmpty()){
+						result = result.add(Hand.get(0));
+					}else{
+						result = result.add(sortedHand.get(0));
+					}
 				}else{
 					result = result.add(singleCards.get(0));
 				}
@@ -57,8 +59,9 @@ public class Dashiosimi {
 						result = result.add(Hand.get(0));
 						result = result.add(Hand.get(1));
 					}else if(sortedHand.size() == 1){
-						result = result.add(Hand.get(0));
 						result = result.add(sortedHand.get(0));
+						Hand = Hand.remove(sortedHand.get(0));
+						result = result.add(Hand.get(0));
 					}else{
 						result = result.add(sortedHand.get(0));
 						result = result.add(sortedHand.get(1));
@@ -66,9 +69,11 @@ public class Dashiosimi {
 				}else if(singleCards.size() == 1){
 					if(sortedHand.isEmpty()){
 						result = result.add(singleCards.get(0));
+						Hand = Hand.remove(singleCards.get(0));
 						result = result.add(Hand.get(0));
 					}else{
 						result = result.add(singleCards.get(0));
+						sortedHand = sortedHand.remove(singleCards.get(0));
 						result = result.add(sortedHand.get(0));
 					}
 				}else{
