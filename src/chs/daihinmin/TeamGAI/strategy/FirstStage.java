@@ -29,7 +29,7 @@ public  class FirstStage {
 	 * 序盤の動きを表した関数 singleCards、役カードの4以上１３以下のカードを出す 縛りは４〜１３以内のカードから弱い順に出す
 	 */
 
-	public static Meld requestingPlay(Melds melds, Place place, Rules rules) {
+	public static Meld requestingPlay(Melds melds, Place place, Rules rules,PlayedCardList pList) {
 
 		boolean showFlag = true;
 		//シングルJOKERにスペ３出す
@@ -131,7 +131,10 @@ public  class FirstStage {
 			
 		
 		} else{
-			
+			if (place.lastMeld() == pList.lastPlayedMeld) {
+				// 最後に出したのが自分ならパス
+				return PASS;
+			}
 			if (!place.isReverse()){
 				melds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 			}else{
@@ -140,7 +143,11 @@ public  class FirstStage {
 			// 場が縛られている時
 			if (!place.lockedSuits().equals(Suits.EMPTY_SUITS)) {
 				// 場を縛っているスート集合に適合する役を抽出して,候補とする．
-				melds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+				if(!place.isReverse()){
+					melds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+				}else{
+					melds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+				}
 				melds = melds.extract(Melds.suitsOf(place.lockedSuits()));
 			}
 			Rank next_rank;
