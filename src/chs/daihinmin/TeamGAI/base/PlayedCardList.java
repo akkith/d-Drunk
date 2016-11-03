@@ -119,17 +119,17 @@ public class PlayedCardList {
 	}
 
 	//手札の点数の平均値
-	public double calcMeldsVps(Melds melds, Rules rules, Order order) {
+	public double calcMeldsVps(Melds melds,Place place, Rules rules, Order order) {
 		int size = melds.size();
 		double value = 0;
 		for (Meld meld : melds) {
-			value += calcMeldValue(meld, rules, order);
+			value += calcMeldValue(meld, place, rules, order);
 		}
 		return value / melds.size();
 	}
 
 	// 引数の役より強い役の数を返す
-	public int calcMeldValue(Meld meld, Rules rules, Order order) {
+	public int calcMeldValue(Meld meld,Place place, Rules rules, Order order) {
 		/*
 		 * if(showFlag){ System.out.println("calcMeldValue in Meld :" +
 		 * meld.toString()); System.out.println("melds type :" + meld.type()); }
@@ -148,8 +148,12 @@ public class PlayedCardList {
 			return 0;
 		}
 		Melds melds = meldsList
-				.extract(Melds.typeOf(meld.type()).and(Melds.sizeOf(meld.asCards().size()).and(Melds.rankOf(next_rank)
+					.extract(Melds.typeOf(meld.type()).and(Melds.sizeOf(meld.asCards().size()).and(Melds.rankOf(next_rank)
 						.or(order == Order.NORMAL ? Melds.rankOver(next_rank) : Melds.rankUnder(next_rank)))));
+		if(place.lockedSuits() != Suits.EMPTY_SUITS){
+			melds = melds.extract(Melds.suitsOf(place.lockedSuits()));
+			
+		}
 
 		return melds.size();
 	}

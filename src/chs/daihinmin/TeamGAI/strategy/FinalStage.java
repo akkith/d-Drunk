@@ -46,7 +46,7 @@ public class FinalStage {
 
 		// 流せるやくかそうで無いかでわける
 		for (Meld m : melds) {
-			Double val = new Double(pList.calcMeldValue(m, rules, place.order()));
+			Double val = new Double(pList.calcMeldValue(m, place, rules, place.order()));
 			meldHash.put(m, val);
 			if (val <= 0) {
 				++cntPowerfull;
@@ -127,7 +127,7 @@ public class FinalStage {
 			for (Meld m : playables) {
 				
 				Melds nextHand = pMaker.patMake(Melds.project(melds.remove(m)), place, pList.jokerFlag);
-				int tValue = meldValue(nextHand, m, rules, place.order());
+				int tValue = meldValue(nextHand, m,place, rules, place.order());
 				//int tValue = meldValue(melds.remove(m), m);
 				if (showFlag) {
 					System.out.println("Meld  :" + m.toString());
@@ -150,7 +150,7 @@ public class FinalStage {
 	}
 
 	// 場が流せそうな役 - 場が流せなさそうな役 を価値とする
-	public int meldValue(Melds melds, Meld meld, Rules rules, Order order) {
+	public int meldValue(Melds melds, Meld meld,Place place, Rules rules, Order order) {
 		
 		int value = 0;
 		if (meldHash.get(meld) <= 0) {
@@ -162,7 +162,7 @@ public class FinalStage {
 		}
 		for (Meld m : melds) {
 			if(!meldHash.containsKey(m)){
-				Double val = new Double(pList.calcMeldValue(m, rules, order));
+				Double val = new Double(pList.calcMeldValue(m, place,rules, order));
 				meldHash.put(m, val);
 			}
 			if (meldHash.get(m) == 0 && m.type() != Meld.Type.SEQUENCE) {

@@ -28,7 +28,7 @@ public class SecondStage {
 		// 手札の役の点数表を作る
 		meldHash.clear();
 		for (Meld m : melds) {
-			Double val = new Double( pList.calcMeldValue(m, rules, place.order()) );
+			Double val = new Double( pList.calcMeldValue(m, place,rules, place.order()) );
 			meldHash.put(m, val);
 			nomalValue += val;
 			//場が流せなさそうで上に重ねられ無いのは平均値から除く
@@ -49,7 +49,7 @@ public class SecondStage {
 			// 革命できてそのほうが強そうならやる
 			Melds canRevol = melds.extract(Melds.GROUPS.and(Melds.sizeOver(3)).or(Melds.SEQUENCES.and(Melds.sizeOver(4))));
 			if (!canRevol.isEmpty()) {
-				double reverseValue = pList.calcMeldsVps(melds, rules, place.order().reverse());
+				double reverseValue = pList.calcMeldsVps(melds, place,rules, place.order().reverse());
 				if (nomalValue > reverseValue) {
 					return canRevol.extract(Melds.MAX_RANK).get(0);
 				}
