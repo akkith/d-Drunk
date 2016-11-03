@@ -135,6 +135,10 @@ public class PlayedCardList {
 		 * meld.toString()); System.out.println("melds type :" + meld.type()); }
 		 */
 		// Melds melds;
+		
+		if(meld.rank() == Rank.EIGHT){
+			return 0;
+		}
 		Rank next_rank;
 		try {
 			next_rank = meld.type() == Meld.Type.SEQUENCE

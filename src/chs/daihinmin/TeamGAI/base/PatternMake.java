@@ -8,7 +8,7 @@ import jp.ac.uec.daihinmin.card.Rank;
 //import jp.ac.uec.daihinmin.card.Melds.*;
 
 public class PatternMake {
-	boolean showFlag = true;
+	boolean showFlag = false;
 
 	public PatternMake() {
 		// do nothing

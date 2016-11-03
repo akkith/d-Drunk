@@ -15,17 +15,27 @@ public class FinalStage {
 	/**
 	 * 終盤の動きを表した関数 前提：手札の役がまとめると３組以下 出せる役が何も無い時はこの関数を呼び出され無い
 	 */
-
-	public boolean showFlag = true;
 	
+	//デバッグ用
+	public boolean showFlag = true;
+
+	//手札評価用
+	PlayedCardList pList;
 	HashMap<Meld, Double> meldHash = new HashMap<Meld, Double>();
 
-	public Meld requestingPlay(Melds melds, Place place, Rules rules, PlayedCardList pList) {
-		
-		if (place.lastMeld() == pList.lastPlayedMeld) {
+	public Meld requestingPlay(Melds melds, Place place, Rules rules, PlayedCardList playedList, PatternMake pMaker) {
+		/*
+		if (place.lastMeld() == playedList.lastPlayedMeld) {
 			// 最後に出したのが自分ならパス
 			return PASS;
 		}
+		*/
+		// スペードの３を持っていてジョーカーシングルが来たら出す
+		if (place.hasJoker() && place.type() == Meld.Type.SINGLE && melds.contains(createSingleMeld(Card.S3))) {
+			return createSingleMeld(Card.S3);
+		}
+
+		pList = playedList;
 		
 		int cntPowerfull = 0;
 		meldHash.clear();
@@ -110,13 +120,16 @@ public class FinalStage {
 			// 場に出されている役の,タイプ,枚数,ランク,革命中か否か,に合わせて,「出すことができる」候補に絞る
 			playables = melds.extract(Melds.typeOf(place.type()).and(Melds.sizeOf(place.size())));
 
-			playables = melds.extract(Melds.rankOf(next_rank)
+			playables = playables.extract(Melds.rankOf(next_rank)
 					.or(place.order() == Order.NORMAL ? Melds.rankOver(next_rank) : Melds.rankUnder(next_rank)));
 
 			int value = -1;
 			for (Meld m : playables) {
-				int tValue = meldValue(melds.remove(m), m);
-				if(showFlag){
+				
+				Melds nextHand = pMaker.patMake(Melds.project(melds.remove(m)), place);
+				int tValue = meldValue(nextHand, m, rules, place.order());
+				//int tValue = meldValue(melds.remove(m), m);
+				if (showFlag) {
 					System.out.println("Meld  :" + m.toString());
 					System.out.println("point :" + tValue);
 				}
@@ -137,12 +150,21 @@ public class FinalStage {
 	}
 
 	// 場が流せそうな役 - 場が流せなさそうな役 を価値とする
-	public int meldValue(Melds melds, Meld meld) {
+	public int meldValue(Melds melds, Meld meld, Rules rules, Order order) {
+		
 		int value = 0;
 		if (meldHash.get(meld) <= 0) {
 			value += 1;
+			if(melds.size() <= 1){
+				//勝てそうならあからさまな点数を返す
+				return 100;
+			}
 		}
 		for (Meld m : melds) {
+			if(!meldHash.containsKey(m)){
+				Double val = new Double(pList.calcMeldValue(m, rules, order));
+				meldHash.put(m, val);
+			}
 			if (meldHash.get(m) == 0 && m.type() != Meld.Type.SEQUENCE) {
 				value += 1;
 			} else {

@@ -68,14 +68,24 @@ public class dDrunk extends BotSkeleton {
 			isGameStart = true;
 			cardList.updateList(this.hand());
 		}
-
-		// 現在のカード状況で考えられる役を登録
-		cardList.updateMeldsList();
-
+		
 		// 場の状況
 		Place place = this.place();
 		// ルール
 		Rules rules = this.rules();
+		
+		//最後に出したのが自分ならパス
+		if(!place.isRenew() && cardList.lastPlayedMeld == place.lastMeld()){
+			if(showFlag){
+				System.out.println("PASS");
+			}
+			return PASS;
+		}
+
+		// 現在のカード状況で考えられる役を登録
+		cardList.updateMeldsList();
+
+
 		// 役の作成
 		//Melds melds = patMaker.patMake(this.hand(), place);
 		Melds melds;
@@ -90,7 +100,7 @@ public class dDrunk extends BotSkeleton {
 			melds = patMaker.patMake(this.hand(), place);
 			playMeld = secStage.requestingPlay(melds, place, rules, cardList);
 			if(melds.size() <= 4 && playMeld != PASS){
-				++seqNum;
+				//++seqNum;
 			}
 		}else{
 			if(showFlag){
@@ -103,7 +113,7 @@ public class dDrunk extends BotSkeleton {
 			if(melds == Melds.EMPTY_MELDS){
 				return PASS;
 			}
-			playMeld = finStage.requestingPlay(melds, place, rules, cardList);
+			playMeld = finStage.requestingPlay(melds, place, rules, cardList, patMaker);
 		}
 		//return defaultStrategy.requestingPlay(melds, place, rules);
 		
