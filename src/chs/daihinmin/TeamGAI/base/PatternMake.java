@@ -36,7 +36,7 @@ public class PatternMake {
 			if (!place.isReverse()){
 				//非革命時、JOKERを抜いてできる階段を作る
 				dummyHands = dummyHands.remove(Card.JOKER);
-				dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.ACE)));
+				dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
 				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 				dummyHands = dummyHands.remove(Melds.project(sequence));
 				//JOKER入れてできる階段も作る
@@ -45,7 +45,7 @@ public class PatternMake {
 			}else{
 				//革命中
 				dummyHands = dummyHands.remove(Card.JOKER);
-				dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
+				dummyHands = dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
 				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 				dummyHands = dummyHands.remove(Melds.project(sequence));
 				dummyHands = dummyHands.add(Card.JOKER);
