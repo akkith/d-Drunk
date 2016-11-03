@@ -126,7 +126,7 @@ public class FinalStage {
 			int value = -1;
 			for (Meld m : playables) {
 				
-				Melds nextHand = pMaker.patMake(Melds.project(melds.remove(m)), place);
+				Melds nextHand = pMaker.patMake(Melds.project(melds.remove(m)), place, pList.jokerFlag);
 				int tValue = meldValue(nextHand, m, rules, place.order());
 				//int tValue = meldValue(melds.remove(m), m);
 				if (showFlag) {

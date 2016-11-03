@@ -43,15 +43,15 @@ public  class FirstStage {
 			Melds mMelds = melds;
 			//階段の役を保持し、除く
 			Melds qMelds = melds.extract(Melds.SEQUENCES);
-			melds = melds.remove(qMelds);
-			//階段役から３とJACK以上を抜きさらに階段を作る
-			qMelds = qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
-			qMelds = qMelds.extract(Melds.SEQUENCES);
+//			melds = melds.remove(qMelds);
+//			//階段役から３とJACK以上を抜きさらに階段を作る
+//			qMelds = qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+//			qMelds = qMelds.extract(Melds.SEQUENCES);
 			//n枚組の役を保持し、除く
 			//qMelds =  qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
-			Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
-			gMelds = gMelds.extract(Melds.GROUPS);
-			melds = melds.remove(gMelds);
+//			Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+			Melds gMelds = melds.extract(Melds.GROUPS);
+			//melds = melds.remove(gMelds);
 			//残った役をシングルに
 			Melds sMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 			sMelds = sMelds.extract(Melds.SINGLES);
