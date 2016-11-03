@@ -16,7 +16,7 @@ public class SecondStage {
 	 */
 
 	HashMap<Meld, Double> meldHash = new HashMap<Meld, Double>();
-	public boolean showFlag = false;
+	public boolean showFlag = true;
 
 	public Meld requestingPlay(Melds melds, Place place, Rules rules, PlayedCardList pList) {
 		//スペードの３を持っていてジョーカーシングルが来たら出す
@@ -24,14 +24,20 @@ public class SecondStage {
 			return createSingleMeld(Card.S3);			
 		}
 		double nomalValue = 0;
+		int removeMeldNum = 0;
 		// 手札の役の点数表を作る
 		meldHash.clear();
 		for (Meld m : melds) {
 			Double val = new Double( pList.calcMeldValue(m, rules, place.order()) );
 			meldHash.put(m, val);
 			nomalValue += val;
+			//場が流せなさそうで上に重ねられ無いのは平均値から除く
+			if(m.type() == Meld.Type.SEQUENCE || (m.type() == Meld.Type.GROUP && m.asCards().size() >= 3)){
+				nomalValue -= val;
+				--removeMeldNum;
+			}
 		}
-		nomalValue /= melds.size();
+		nomalValue /= (melds.size() - removeMeldNum);
 
 		// 場がからのとき
 		if (place.isRenew()) {
@@ -67,10 +73,12 @@ public class SecondStage {
 			if(showFlag){
 				System.out.println("place is not clean");
 			}
+			/*
 			if (place.lastMeld() == pList.lastPlayedMeld) {
 				// 最後に出したのが自分ならパス
 				return PASS;
 			}
+			*/
 
 			//ここからいつもの
 			Rank next_rank;
@@ -104,7 +112,10 @@ public class SecondStage {
 			if(meldHash.get(melds.get(0)) >= nomalValue){
 				return melds.get(0);
 			}
-			// 強いのが出せるなら考えて出す
+			//8は例外的に考える
+			if(melds.get(0).rank() == Rank.EIGHT){
+				return melds.get(0);
+			}
 			//強いなかの平均以下なら出す
 			double averageValue = 0;
 			int cnt = 0;

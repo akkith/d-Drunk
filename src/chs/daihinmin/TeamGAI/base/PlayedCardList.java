@@ -11,8 +11,12 @@ public class PlayedCardList {
 	Melds meldsList = null;
 	// 最後に自分が出した役
 	public Meld lastPlayedMeld = null;
-	//ジョーカーが出たか否か
+	// ジョーカーが出たか否か
 	public boolean jokerFlag = true;
+	//残りタイプ別組数
+	public int namOfSingle = 0;
+	public int namOfGroup = 0;
+	public int namOfSequence = 0;
 
 	// デバッグ用
 	boolean showFlag = false;
@@ -33,7 +37,7 @@ public class PlayedCardList {
 	// 使ったカードを抜く
 	public void updateList(Meld meld) {
 		cardList = cardList.remove(meld.asCards());
-		if(meld.asCards().contains(Card.JOKER)){
+		if (meld.asCards().contains(Card.JOKER)) {
 			jokerFlag = false;
 		}
 		if (dammyCheck) {
@@ -43,7 +47,7 @@ public class PlayedCardList {
 
 	public void updateList(Cards cards) {
 		cardList = cardList.remove(cards);
-		if(cards.contains(Card.JOKER)){
+		if (cards.contains(Card.JOKER)) {
 			jokerFlag = false;
 		}
 		if (dammyCheck) {
@@ -71,6 +75,11 @@ public class PlayedCardList {
 		meldsList = meldsList.add(singleMelds);
 		meldsList = meldsList.add(groupMelds);
 		meldsList = meldsList.add(sequenceMelds);
+		
+		//数を数える
+		namOfSingle = singleMelds.size();
+		namOfGroup = groupMelds.size();
+		namOfSequence = sequenceMelds.size();
 
 		if (dammyCheck) {
 			// meldsList = Melds.parseMelds(dammyCards);
@@ -90,10 +99,26 @@ public class PlayedCardList {
 		 */
 	}
 
+	//
+	public int getNamOfType(Meld.Type type){
+		if(type == Meld.Type.SINGLE){
+			return namOfSingle;
+		}else if(type == Meld.Type.GROUP){
+			return namOfGroup;
+		}else if(type == Meld.Type.SEQUENCE){
+			return namOfSequence;
+		}
+		
+		return -1;
+	}
+	
+	
+	//最後に出した組を覚える
 	public void setLastPlayedMeld(Meld meld) {
 		lastPlayedMeld = meld;
 	}
 
+	//手札の点数の平均値
 	public double calcMeldsVps(Melds melds, Rules rules, Order order) {
 		int size = melds.size();
 		double value = 0;
@@ -110,6 +135,10 @@ public class PlayedCardList {
 		 * meld.toString()); System.out.println("melds type :" + meld.type()); }
 		 */
 		// Melds melds;
+		
+		if(meld.rank() == Rank.EIGHT){
+			return 0;
+		}
 		Rank next_rank;
 		try {
 			next_rank = meld.type() == Meld.Type.SEQUENCE
@@ -120,7 +149,7 @@ public class PlayedCardList {
 		}
 		Melds melds = meldsList
 				.extract(Melds.typeOf(meld.type()).and(Melds.sizeOf(meld.asCards().size()).and(Melds.rankOf(next_rank)
-						.or(order == Order.NORMAL ? Melds.rankOver(next_rank) : Melds.rankUnder(next_rank) ))));
+						.or(order == Order.NORMAL ? Melds.rankOver(next_rank) : Melds.rankUnder(next_rank)))));
 
 		return melds.size();
 	}
@@ -139,6 +168,11 @@ public class PlayedCardList {
 		System.out.println("dia:" + dCards.toString());
 		System.out.println("hea" + hCards.toString());
 		System.out.println("clu" + cCards.toString());
+	}
+
+	public void showDetail() {
+		System.out.println("non used cards : " + cardList.size());
+		System.out.println("non used melds : " + meldsList.size());
 	}
 
 }
