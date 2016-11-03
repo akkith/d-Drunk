@@ -22,11 +22,15 @@ public class Dashiosimi {
 		Cards result = Cards.EMPTY_CARDS;
 		// 手札を昇順にソート．たとえば，JOKER S2 HA ... D4 D3
 		Cards sortedHand = Cards.sort(hand);
+		//元のカードを保持
+		Cards Hand = sortedHand;
 		sortedHand = sortedHand.remove(Card.JOKER);
 		//単騎出ししかできないカード
-		sortedHand= sortedHand.remove(Melds.project(Melds.parseSequenceMelds(sortedHand))); 
-		sortedHand = sortedHand.remove(Melds.project(Melds.parseGroupMelds(sortedHand))); 
-		Cards singleCards = sortedHand;
+		//作業用ハンド
+		Cards hogeHand = sortedHand;
+		hogeHand= hogeHand.remove(Melds.project(Melds.parseSequenceMelds(sortedHand))); 
+		hogeHand = hogeHand.remove(Melds.project(Melds.parseGroupMelds(sortedHand))); 
+		Cards singleCards = hogeHand;
 		singleCards = Cards.sort(singleCards);
 		
 		int givenSize = Rules.sizeGivenCards(rules,rank);
@@ -40,18 +44,38 @@ public class Dashiosimi {
 			singleCards = singleCards.remove(Card.D8,Card.H8,Card.S8,Card.C8);
 			sortedHand = sortedHand.remove(Card.D8,Card.H8,Card.S8,Card.C8);
 			if(givenSize == 1){
-				if(singleCards.isEmpty()){
-					result = result.add(sortedHand.get(0));
+				if(singleCards.isEmpty() /*&& sortedHand.isEmpty()*/){
+					if(!sortedHand.isEmpty()){
+						result = result.add(Hand.get(0));
+					}else{
+						result = result.add(sortedHand.get(0));
+					}
 				}else{
 					result = result.add(singleCards.get(0));
 				}
 			}else if(givenSize == 2){
-				if(singleCards.isEmpty()){
-					result = result.add(sortedHand.get(0));
-					result = result.add(sortedHand.get(1));
+				if(singleCards.isEmpty() /*&& sortedHand.isEmpty()*/){
+					if(sortedHand.isEmpty()){
+						result = result.add(Hand.get(0));
+						result = result.add(Hand.get(1));
+					}else if(sortedHand.size() == 1){
+						result = result.add(sortedHand.get(0));
+						Hand = Hand.remove(sortedHand.get(0));
+						result = result.add(Hand.get(0));
+					}else{
+						result = result.add(sortedHand.get(0));
+						result = result.add(sortedHand.get(1));
+					}
 				}else if(singleCards.size() == 1){
-					result = result.add(singleCards.get(0));
-					result = result.add(sortedHand.get(0));
+					if(sortedHand.isEmpty()){
+						result = result.add(singleCards.get(0));
+						Hand = Hand.remove(singleCards.get(0));
+						result = result.add(Hand.get(0));
+					}else{
+						result = result.add(singleCards.get(0));
+						sortedHand = sortedHand.remove(singleCards.get(0));
+						result = result.add(sortedHand.get(0));
+					}
 				}else{
 					result = result.add(singleCards.get(0));
 					result = result.add(singleCards.get(1));

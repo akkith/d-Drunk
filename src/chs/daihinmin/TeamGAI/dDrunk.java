@@ -16,6 +16,9 @@ public class dDrunk extends BotSkeleton {
 	// HT
 	FirstStage firstStage = new FirstStage();
 	PlayedCardList cardList;
+	
+    public int times=0;
+	
 
 	// シークエンス記録変数
 	int seqNum = 0;
@@ -38,6 +41,7 @@ public class dDrunk extends BotSkeleton {
 		isGameStart = false;
 		// 年のため二回目
 		seqNum = 0;
+		times = 0;
 	}
 
 	public void played(Integer num, Meld playedMeld) {
@@ -72,8 +76,7 @@ public class dDrunk extends BotSkeleton {
 		// 場の状況
 		Place place = this.place();
 		// ルール
-		Rules rules = this.rules();
-		
+		Rules rules = this.rules();		
 		//最後に出したのが自分ならパス
 		if(!place.isRenew() && cardList.lastPlayedMeld == place.lastMeld()){
 			if(showFlag){
@@ -92,21 +95,32 @@ public class dDrunk extends BotSkeleton {
 		Meld playMeld = PASS;
 		//提出用の役
 		//Meld playMeld = FirstStage.requestingPlay(melds, place, rules);
-		
-		if(seqNum == 0){
+//>>>>>>> bb3bdfdd5879462e41fde19e7fcb28b79fdd681f
+		if(seqNum <= 0 ){
+			if(showFlag){
+				System.out.println("==sequence first==");
+			}
+			melds = patMaker.patFirstMake(this.hand(), place, cardList.jokerFlag);
+			playMeld = FirstStage.requestingPlay(melds, place, rules,cardList);
+			++times;
+			if(times >= 3){
+				++seqNum;
+			}
+		}else if(seqNum == 1){
 			if(showFlag){
 				System.out.println("==sequence second==");
 			}
-			melds = patMaker.patMake(this.hand(), place);
+			melds = patMaker.patMake(this.hand(), place, cardList.jokerFlag);
 			playMeld = secStage.requestingPlay(melds, place, rules, cardList);
 			if(melds.size() <= 4 && playMeld != PASS){
-				//++seqNum;
+				++seqNum;
 			}
+			
 		}else{
 			if(showFlag){
 				System.out.println("==sequence final==");
 			}
-			melds = patMaker.patMakeFinal(this.hand(), place, rules);
+			melds = patMaker.patMakeFinal(this.hand(), place, rules, cardList.jokerFlag);
 			if(showFlag){
 				System.out.println(melds.toString());
 			}
