@@ -43,7 +43,7 @@ public  class FirstStage {
 			Melds mMelds = melds;
 			//階段の役を保持し、除く
 			Melds qMelds = melds.extract(Melds.SEQUENCES);
-//			melds = melds.remove(qMelds);
+			melds = melds.remove(qMelds);
 //			//階段役から３とJACK以上を抜きさらに階段を作る
 //			qMelds = qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 //			qMelds = qMelds.extract(Melds.SEQUENCES);
@@ -51,7 +51,10 @@ public  class FirstStage {
 			//qMelds =  qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 //			Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 			Melds gMelds = melds.extract(Melds.GROUPS);
-			//melds = melds.remove(gMelds);
+			melds = melds.remove(gMelds);
+			//革命できる４枚カードを抜く
+			gMelds = gMelds.extract(Melds.sizeUnder(4));
+			gMelds = gMelds.extract(Melds.GROUPS);
 			//残った役をシングルに
 			Melds sMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 			sMelds = sMelds.extract(Melds.SINGLES);
@@ -87,14 +90,14 @@ public  class FirstStage {
 			Melds qMelds = melds.extract(Melds.SEQUENCES);
 			melds = melds.remove(qMelds);
 			//階段役から３と２を抜きさらに階段を作る
-			qMelds = qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
-			qMelds = qMelds.extract(Melds.SEQUENCES);
+//			qMelds = qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+//			qMelds = qMelds.extract(Melds.SEQUENCES);
 			//n枚組の役を保持し、除く
 			//qMelds =  qMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 			//Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
 			//n枚組の役から３と２を抜きさらにn枚組を作る
-			Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
-			gMelds = melds.extract(Melds.GROUPS);
+//			Melds gMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+			Melds gMelds = melds.extract(Melds.GROUPS);
 			melds = melds.remove(gMelds);
 
 			//革命できる４枚カードを抜く
@@ -102,7 +105,8 @@ public  class FirstStage {
 			gMelds = gMelds.extract(Melds.GROUPS);
 			
 			//残った役をシングルに
-			Melds sMelds = melds.extract(Melds.SINGLES);
+			Melds sMelds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+			sMelds = sMelds.extract(Melds.SINGLES);
 			//singleが４以上ACEいかなら出す
 			if (!sMelds.isEmpty() /*&& (Rank.FOUR.toInt() <= sMelds.get(0).rank().toInt() && sMelds.get(0).rank().toInt() <= Rank.KING.toInt())
 					&& sMelds.extract(Melds.rankOf(mMelds.extract(Melds.MAX_RANK)))  && melds.get(0).rank() == Rank.EIGHT */) {
@@ -143,11 +147,11 @@ public  class FirstStage {
 			// 場が縛られている時
 			if (!place.lockedSuits().equals(Suits.EMPTY_SUITS)) {
 				// 場を縛っているスート集合に適合する役を抽出して,候補とする．
-				if(!place.isReverse()){
-					melds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
-				}else{
-					melds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
-				}
+//				if(!place.isReverse()){
+//					melds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+//				}else{
+//					melds = melds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+//				}
 				melds = melds.extract(Melds.suitsOf(place.lockedSuits()));
 			}
 			Rank next_rank;
