@@ -112,7 +112,7 @@ public class dDrunk extends BotSkeleton {
 			}
 			melds = patMaker.patMake(this.hand(), place, cardList.jokerFlag);
 			playMeld = secStage.requestingPlay(melds, place, rules, cardList);
-			if(melds.size() <= 4 && playMeld != PASS){
+			if(melds.size() <= 5 && playMeld != PASS){
 				++seqNum;
 			}
 			
