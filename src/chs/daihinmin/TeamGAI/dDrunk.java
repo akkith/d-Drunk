@@ -87,7 +87,14 @@ public class dDrunk extends BotSkeleton {
 
 		// 現在のカード状況で考えられる役を登録
 		cardList.updateMeldsList();
-
+//
+//		if (timerFlag)
+//			start = System.currentTimeMillis();
+//		// 初回のみ手札のカードを未登場カードリストから除く
+//		if (!isGameStart) {
+//			isGameStart = true;
+//			cardList.updateList(this.hand());
+//		}
 
 		// 役の作成
 		//Melds melds = patMaker.patMake(this.hand(), place);
@@ -100,10 +107,11 @@ public class dDrunk extends BotSkeleton {
 			if(showFlag){
 				System.out.println("==sequence first==");
 			}
+			
 			melds = patMaker.patFirstMake(this.hand(), place, cardList.jokerFlag);
-			playMeld = FirstStage.requestingPlay(melds, place, rules,cardList);
+			playMeld = firstStage.requestingPlay(melds, place, rules,cardList);
 			++times;
-			if(times >= 3){
+			if(times >= 3 && melds.size() <= 6){
 				++seqNum;
 			}
 		}else if(seqNum == 1){
@@ -131,17 +139,24 @@ public class dDrunk extends BotSkeleton {
 		}
 		//return defaultStrategy.requestingPlay(melds, place, rules);
 		
+		
+		if (timerFlag) {
+			end = System.currentTimeMillis();
+			//cardList.showDetail();
+			System.out.println((end - start) + "ms");
+		}
+		
 		cardList.updateList(playMeld);
 		// cardList.showCards();
 
 		// 自分の使ったカードを記録
 		cardList.setLastPlayedMeld(playMeld);
 
-		if (timerFlag) {
-			end = System.currentTimeMillis();
-			//cardList.showDetail();
-			System.out.println((end - start) + "ms");
-		}
+//		if (timerFlag) {
+//			end = System.currentTimeMillis();
+//			//cardList.showDetail();
+//			System.out.println((end - start) + "ms");
+//		}
 		return playMeld;
 	}
 
