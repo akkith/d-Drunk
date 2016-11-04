@@ -17,7 +17,7 @@ public class FinalStage {
 	 */
 	
 	//デバッグ用
-	public boolean showFlag = true;
+	public boolean showFlag = false;
 
 	//手札評価用
 	PlayedCardList pList;
@@ -123,7 +123,8 @@ public class FinalStage {
 			playables = playables.extract(Melds.rankOf(next_rank)
 					.or(place.order() == Order.NORMAL ? Melds.rankOver(next_rank) : Melds.rankUnder(next_rank)));
 
-			int value = -1;
+			
+			int value = meldValue(melds, PASS,place, rules, place.order());
 			for (Meld m : playables) {
 				
 				Melds nextHand = pMaker.patMake(Melds.project(melds.remove(m)), place, pList.jokerFlag);
@@ -133,7 +134,7 @@ public class FinalStage {
 					System.out.println("Meld  :" + m.toString());
 					System.out.println("point :" + tValue);
 				}
-				if (value < tValue) {
+				if (value <= tValue) {
 					playable = m;
 					value = tValue;
 				}
@@ -152,8 +153,8 @@ public class FinalStage {
 	// 場が流せそうな役 - 場が流せなさそうな役 を価値とする
 	public int meldValue(Melds melds, Meld meld,Place place, Rules rules, Order order) {
 		
-		int value = 0;
-		if (meldHash.get(meld) <= 0) {
+		int value = 1;
+		if (meld != PASS && meldHash.get(meld) <= 0) {
 			value += 1;
 			if(melds.size() <= 1){
 				//勝てそうならあからさまな点数を返す

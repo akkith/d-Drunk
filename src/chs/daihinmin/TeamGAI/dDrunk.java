@@ -26,7 +26,7 @@ public class dDrunk extends BotSkeleton {
 	boolean isGameStart = false;
 
 	//デバッグ表示用
-	boolean showFlag = true;
+	boolean showFlag = false;
 	// 時間計測用
 	boolean timerFlag = true;
 
@@ -64,7 +64,7 @@ public class dDrunk extends BotSkeleton {
 		if(showFlag){
 			System.out.println("Player:" + this.number());
 		}
-		long start = 0, end = 0; // 時間計測用
+		long start = 0, mid = 0, end = 0; // 時間計測用
 		if (timerFlag)
 			start = System.currentTimeMillis();
 		// 初回のみ手札のカードを未登場カードリストから除く
@@ -95,12 +95,16 @@ public class dDrunk extends BotSkeleton {
 		Meld playMeld = PASS;
 		//提出用の役
 		//Meld playMeld = FirstStage.requestingPlay(melds, place, rules);
-//>>>>>>> bb3bdfdd5879462e41fde19e7fcb28b79fdd681f
+
 		if(seqNum <= 0 ){
 			if(showFlag){
 				System.out.println("==sequence first==");
 			}
 			melds = patMaker.patFirstMake(this.hand(), place, cardList.jokerFlag);
+			if(timerFlag){
+				mid = System.currentTimeMillis();
+				System.out.println("1st make hand : " + (mid - start) + "ms");
+			}
 			playMeld = FirstStage.requestingPlay(melds, place, rules,cardList);
 			++times;
 			if(times >= 3){
@@ -111,8 +115,12 @@ public class dDrunk extends BotSkeleton {
 				System.out.println("==sequence second==");
 			}
 			melds = patMaker.patMake(this.hand(), place, cardList.jokerFlag);
+			if(timerFlag){
+				mid = System.currentTimeMillis();
+				System.out.println("2nd make hand : " + (mid - start) + "ms");
+			}
 			playMeld = secStage.requestingPlay(melds, place, rules, cardList);
-			if(melds.size() <= 5 && playMeld != PASS){
+			if(melds.size() <= 4 && playMeld != PASS){
 				++seqNum;
 			}
 			
@@ -123,6 +131,10 @@ public class dDrunk extends BotSkeleton {
 			melds = patMaker.patMakeFinal(this.hand(), place, rules, cardList.jokerFlag);
 			if(showFlag){
 				System.out.println(melds.toString());
+			}
+			if(timerFlag){
+				mid = System.currentTimeMillis();
+				System.out.println("3rd make hand : " + (mid - start) + "ms");
 			}
 			if(melds == Melds.EMPTY_MELDS){
 				return PASS;

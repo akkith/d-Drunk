@@ -12,7 +12,7 @@ import jp.ac.uec.daihinmin.*;
 import jp.ac.uec.daihinmin.card.*;
 
 public class Dashiosimi {
-	boolean showFlag = true;
+	boolean showFlag = false;
 
 	/**
      * 交換カードを決定するメソッド．
