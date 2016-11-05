@@ -86,12 +86,15 @@ public class dDrunk extends BotSkeleton {
 		}
 
 		// 現在のカード状況で考えられる役を登録
-		if(seqNum >= 1){
-			cardList.updateMeldsList();
-			if(showFlag){
+		if(seqNum == 1){
+			//cardList.updateMeldsList();
+			cardList.updateMeldsListLite();
+			if(timerFlag){
 				mid = System.currentTimeMillis();
 				System.out.println("card list time : " + (mid - start) + "ms");
 			}
+		}else if(seqNum > 1){
+			cardList.updateMeldsList();
 		}
 		
 		// 役の作成
@@ -115,7 +118,7 @@ public class dDrunk extends BotSkeleton {
 			playMeld = FirstStage.requestingPlay(melds, place, rules,cardList);
 
 			++times;
-			if(times >= 3 && melds.size() <= 6){
+			if(times >= 3 || melds.size() <= 6){
 				++seqNum;
 			}
 		}else if(seqNum == 1){
