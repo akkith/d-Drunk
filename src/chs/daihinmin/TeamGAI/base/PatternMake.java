@@ -206,6 +206,7 @@ public class PatternMake {
 				if (!groups.isEmpty())
 					System.out.println("First Look : " + groups.get(0).toString());
 			}
+
 			for (Meld m : groups) {
 				if (showFlag) {
 					System.out.println("Look Group : " + m.toString());
@@ -234,6 +235,7 @@ public class PatternMake {
 					groupParts = groupParts.add(m.asCards());
 					makedMelds = makedMelds.add(m);
 					System.out.println("catch");
+
 
 				}
 			}
@@ -486,7 +488,9 @@ public class PatternMake {
 			if (!groupParts.contains(m.asCards())) {
 				groupParts = groupParts.add(m.asCards());
 				makedMelds = makedMelds.add(m);
-				System.out.println("catch");
+				if(showFlag){
+					System.out.println("catch");
+				}
 
 			}
 		}

@@ -7,13 +7,15 @@ import jp.ac.uec.daihinmin.card.*;
 public class PlayedCardList {
 	// 自分の持っていないカード集合
 	Cards cardList = null;
+	// 軽量版リスト
+	Cards cardListLite = null;
 	// 自分の持っていないカードでできる役集合
 	Melds meldsList = null;
 	// 最後に自分が出した役
 	public Meld lastPlayedMeld = null;
 	// ジョーカーが出たか否か
 	public boolean jokerFlag = true;
-	//残りタイプ別組数
+	// 残りタイプ別組数
 	public int namOfSingle = 0;
 	public int namOfGroup = 0;
 	public int namOfSequence = 0;
@@ -28,6 +30,7 @@ public class PlayedCardList {
 	public PlayedCardList() {
 		cardList = Card.values();
 		cardList = cardList.extract(Cards.JOKERS.not());
+		cardListLite = cardList.extract(Cards.rankUnder(Rank.TEN));
 		if (dammyCheck) {
 			dammyCards = cardList.extract(Cards.JOKERS.not());
 			dammyCards = dammyCards.extract(Cards.rankUnder(Rank.valueOf(10)));
@@ -37,6 +40,7 @@ public class PlayedCardList {
 	// 使ったカードを抜く
 	public void updateList(Meld meld) {
 		cardList = cardList.remove(meld.asCards());
+		cardListLite = cardListLite.remove(meld.asCards());
 		if (meld.asCards().contains(Card.JOKER)) {
 			jokerFlag = false;
 		}
@@ -47,6 +51,7 @@ public class PlayedCardList {
 
 	public void updateList(Cards cards) {
 		cardList = cardList.remove(cards);
+		cardListLite = cardListLite.remove(cards);
 		if (cards.contains(Card.JOKER)) {
 			jokerFlag = false;
 		}
@@ -75,8 +80,8 @@ public class PlayedCardList {
 		meldsList = meldsList.add(singleMelds);
 		meldsList = meldsList.add(groupMelds);
 		meldsList = meldsList.add(sequenceMelds);
-		
-		//数を数える
+
+		// 数を数える
 		namOfSingle = singleMelds.size();
 		namOfGroup = groupMelds.size();
 		namOfSequence = sequenceMelds.size();
@@ -99,27 +104,51 @@ public class PlayedCardList {
 		 */
 	}
 
-	//
-	public int getNamOfType(Meld.Type type){
-		if(type == Meld.Type.SINGLE){
+	// 持ってい無いカードでの役集合生成(軽量版)
+	public void updateMeldsListLite() {
+
+		// meldsList = Melds.parseMelds(cardList.extract(Cards.JOKERS.not()));
+		Melds singleMelds;
+		Melds groupMelds;
+		Melds sequenceMelds;
+		meldsList = Melds.EMPTY_MELDS;
+
+		singleMelds = Melds.parseSingleMelds(cardListLite);
+		groupMelds = Melds.parseGroupMelds(cardListLite);
+		sequenceMelds = Melds.parseSequenceMelds(cardListLite);
+		meldsList = meldsList.add(singleMelds);
+		meldsList = meldsList.add(groupMelds);
+		meldsList = meldsList.add(sequenceMelds);
+
+		// 数を数える
+		namOfSingle = singleMelds.size();
+		namOfGroup = groupMelds.size();
+		namOfSequence = sequenceMelds.size();
+
+		meldsList = meldsList.add(singleMelds);
+		meldsList = meldsList.add(groupMelds);
+		meldsList = meldsList.add(sequenceMelds);
+	}
+
+	public int getNamOfType(Meld.Type type) {
+		if (type == Meld.Type.SINGLE) {
 			return namOfSingle;
-		}else if(type == Meld.Type.GROUP){
+		} else if (type == Meld.Type.GROUP) {
 			return namOfGroup;
-		}else if(type == Meld.Type.SEQUENCE){
+		} else if (type == Meld.Type.SEQUENCE) {
 			return namOfSequence;
 		}
-		
+
 		return -1;
 	}
-	
-	
-	//最後に出した組を覚える
+
+	// 最後に出した組を覚える
 	public void setLastPlayedMeld(Meld meld) {
 		lastPlayedMeld = meld;
 	}
 
-	//手札の点数の平均値
-	public double calcMeldsVps(Melds melds,Place place, Rules rules, Order order) {
+	// 手札の点数の平均値
+	public double calcMeldsVps(Melds melds, Place place, Rules rules, Order order) {
 		int size = melds.size();
 		double value = 0;
 		for (Meld meld : melds) {
@@ -129,14 +158,14 @@ public class PlayedCardList {
 	}
 
 	// 引数の役より強い役の数を返す
-	public int calcMeldValue(Meld meld,Place place, Rules rules, Order order) {
+	public int calcMeldValue(Meld meld, Place place, Rules rules, Order order) {
 		/*
 		 * if(showFlag){ System.out.println("calcMeldValue in Meld :" +
 		 * meld.toString()); System.out.println("melds type :" + meld.type()); }
 		 */
 		// Melds melds;
-		
-		if(meld.rank() == Rank.EIGHT){
+
+		if (meld.rank() == Rank.EIGHT) {
 			return 0;
 		}
 		Rank next_rank;
@@ -148,11 +177,11 @@ public class PlayedCardList {
 			return 0;
 		}
 		Melds melds = meldsList
-					.extract(Melds.typeOf(meld.type()).and(Melds.sizeOf(meld.asCards().size()).and(Melds.rankOf(next_rank)
+				.extract(Melds.typeOf(meld.type()).and(Melds.sizeOf(meld.asCards().size()).and(Melds.rankOf(next_rank)
 						.or(order == Order.NORMAL ? Melds.rankOver(next_rank) : Melds.rankUnder(next_rank)))));
-		if(place.lockedSuits() != Suits.EMPTY_SUITS){
+		if (place.lockedSuits() != Suits.EMPTY_SUITS) {
 			melds = melds.extract(Melds.suitsOf(place.lockedSuits()));
-			
+
 		}
 
 		return melds.size();

@@ -5,8 +5,8 @@ import static jp.ac.uec.daihinmin.card.MeldFactory.createSingleMeldJoker;
 
 import java.util.ArrayList;
 
-import jp.ac.hosei.daihinmin.fujita2.MeldSet;
-import jp.ac.hosei.daihinmin.fujita2.Utils;
+//import jp.ac.hosei.daihinmin.fujita2.MeldSet;
+//import jp.ac.hosei.daihinmin.fujita2.Utils;
 import jp.ac.uec.daihinmin.player.*;
 import jp.ac.uec.daihinmin.*;
 import jp.ac.uec.daihinmin.card.*;

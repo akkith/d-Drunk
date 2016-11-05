@@ -86,16 +86,17 @@ public class dDrunk extends BotSkeleton {
 		}
 
 		// 現在のカード状況で考えられる役を登録
-		cardList.updateMeldsList();
-
-//		if (timerFlag)
-//			start = System.currentTimeMillis();
-//		// 初回のみ手札のカードを未登場カードリストから除く
-//		if (!isGameStart) {
-//			isGameStart = true;
-//			cardList.updateList(this.hand());
-//		}
-
+		if(seqNum == 1){
+			//cardList.updateMeldsList();
+			cardList.updateMeldsListLite();
+			if(timerFlag){
+				mid = System.currentTimeMillis();
+				System.out.println("card list time : " + (mid - start) + "ms");
+			}
+		}else if(seqNum > 1){
+			cardList.updateMeldsList();
+		}
+		
 		// 役の作成
 		//Melds melds = patMaker.patMake(this.hand(), place);
 		Melds melds;
