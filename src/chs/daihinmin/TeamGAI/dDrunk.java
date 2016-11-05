@@ -117,7 +117,7 @@ public class dDrunk extends BotSkeleton {
 			playMeld = FirstStage.requestingPlay(melds, place, rules,cardList);
 
 			++times;
-			if(times >= 3 && melds.size() <= 6){
+			if(times >= 3 || melds.size() <= 6){
 				++seqNum;
 			}
 		}else if(seqNum == 1){

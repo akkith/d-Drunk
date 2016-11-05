@@ -53,15 +53,12 @@ public  class FirstStage {
 //			gMelds = gMelds.extract(Melds.GROUPS);
 			//シングル
 			Melds sMelds = melds.extract(Melds.SINGLES);
-			sMelds = sMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
+			sMelds = sMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.EIGHT)).or(Melds.rankOver(Rank.EIGHT).and(Melds.rankUnder(Rank.JACK))));
+//			s2Melds = sMelds.extract(Melds.rankOver(Rank.EIGHT).and(Melds.rankUnder(Rank.JACK)));
 			sMelds = sMelds.extract(Melds.SINGLES);
-//			for ( int i = 0; i < sMelds.size() ;i++){
-//				if (sMelds.get(i).rank().toInt() == 8){
-//					sMelds = sMelds.remove(sMelds.get(i));
-//				}
-//			}
+//			
 			// singleが４以上１３以下なら出す（８は要検討）、
-			if (!sMelds.isEmpty()) {
+			if (!sMelds.isEmpty() && 4 <= sMelds.get(0).rank().toInt() && sMelds.get(0).rank().toInt() <= 10) {
 				return sMelds.get(0);
 			} else if (!qMelds.isEmpty()) {
 				return qMelds.get(0);		
@@ -87,10 +84,10 @@ public  class FirstStage {
 			//gMelds = gMelds.extract(Melds.GROUPS);
 			//残った役をシングルに
 			Melds sMelds = melds.extract(Melds.SINGLES);
-			sMelds = sMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.ACE)));
+			sMelds = sMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.EIGHT)).or(Melds.rankOver(Rank.EIGHT).and(Melds.rankUnder(Rank.ACE))));
 			sMelds = sMelds.extract(Melds.SINGLES);
 			//singleが４以上ACEいかなら出す
-			if (!sMelds.isEmpty()) {
+			if (!sMelds.isEmpty() && 4 <= sMelds.get(0).rank().toInt() /*&& sMelds.get(0).rank()*/ ) {
 				return sMelds.get(sMelds.size()-1);
 			} else if (!qMelds.isEmpty()) {
 				return qMelds.get(qMelds.size()-1);

@@ -28,7 +28,9 @@ public class PatternMake {
 		if (tHands.contains(Card.S3) && !tHands.contains(Card.JOKER) && jokerFlag) {
 			makedMelds = makedMelds.add(createSingleMeld(Card.S3));
 		}
+		
 
+		
 		// 革命の有無、JOKER無しの階段役を取り除き、その後JOKERありの役を作る
 		Melds sequence = Melds.EMPTY_MELDS;
 		Cards dummyHands = tHands;
@@ -36,64 +38,207 @@ public class PatternMake {
 		
 		if (dummyHands.contains(Card.JOKER)){  
 			if (!place.isReverse()){
-				//非革命時、JOKERを抜いてできる階段を作る
+				Cards seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.remove(Card.JOKER);
-				//dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
 				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.JACK)));
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
-				dummyHands = dummyHands.remove(Melds.project(sequence));
-				//JOKER入れてできる階段も作る
-//				dummyHands = dummyHands.add(Card.JOKER);
+				Melds seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				dummyHands = dummyHands.remove(seqParts);
+				tHands = tHands.remove(seqParts);
+				seqParts = Cards.EMPTY_CARDS;
+				dummyHands = dummyHands.add(Card.JOKER);
+				seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				tHands = tHands.remove(seqParts);
+//				//非革命時、JOKERを抜いてできる階段を作る
+//				dummyHands = dummyHands.remove(Card.JOKER);
+//				//dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
+//				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.JACK)));
 //				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+//				dummyHands = dummyHands.remove(Melds.project(sequence));
+//				//JOKER入れてできる階段も作る
+////				dummyHands = dummyHands.add(Card.JOKER);
+////				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}else{
 				//革命中
+				Cards seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.remove(Card.JOKER);
-//				dummyHands = dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
 				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.ACE)));
-
-
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
-				dummyHands = dummyHands.remove(Melds.project(sequence));
-//				dummyHands = dummyHands.add(Card.JOKER);
+				Melds seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				dummyHands = dummyHands.remove(seqParts);
+				tHands = tHands.remove(seqParts);
+				seqParts = Cards.EMPTY_CARDS;
+				dummyHands = dummyHands.add(Card.JOKER);
+				seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				tHands = tHands.remove(seqParts);
+//				dummyHands = dummyHands.remove(Card.JOKER);
+////				dummyHands = dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
+//				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.ACE)));
+//
+//
 //				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+//				dummyHands = dummyHands.remove(Melds.project(sequence));
+////				dummyHands = dummyHands.add(Card.JOKER);
+////				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}
 		} else {
 			if (!place.isReverse()) {
 				// 非革命時
-				dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+				Cards seqParts = Cards.EMPTY_CARDS;
+				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.JACK)));
+				Melds seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				tHands = tHands.remove(seqParts);
+//				dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
+//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			} else {
 				// 革命中
-				dummyHands = dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+				Cards seqParts = Cards.EMPTY_CARDS;
+				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.ACE)));
+				Melds seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				tHands = tHands.remove(seqParts);
+//				dummyHands = dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
+//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}
 		}
 		
 
-		// 役集合に追加
-		makedMelds = makedMelds.add(sequence);
-		// 作業用手札から取り除く
-		tHands = tHands.remove(Melds.project(sequence));
+//		// 役集合に追加
+//		makedMelds = makedMelds.add(sequence);
+//		// 作業用手札から取り除く
+//		tHands = tHands.remove(Melds.project(sequence));
 
 		// sizeが大きい順にペアを作っていく
 		Cards groupParts = Cards.EMPTY_CARDS;
-		Melds groups = Melds.parseGroupMelds(tHands.extract(Cards.JOKERS.not()));
-		groups = Melds.sort(groups, new CompareToMeldSize());
-		if (showFlag) {
-			if (!groups.isEmpty())
-				System.out.println("First Look : " + groups.get(0).toString());
-		}
-		for (Meld m : groups) {
+		if(!place.isReverse()){
+			Cards gHands = tHands.remove(Card.JOKER);
+			gHands = gHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.JACK)));
+			Melds groups = Melds.parseGroupMelds(gHands);
+			groups = Melds.sort(groups, new CompareToMeldSize());
 			if (showFlag) {
-				System.out.println("Look Group : " + m.toString());
+				if (!groups.isEmpty())
+					System.out.println("First Look : " + groups.get(0).toString());
 			}
-			if (!groupParts.contains(m.asCards())) {
-				groupParts = groupParts.add(m.asCards());
-				makedMelds = makedMelds.add(m);
-				System.out.println("catch");
+			for (Meld m : groups) {
+				if (showFlag) {
+					System.out.println("Look Group : " + m.toString());
+				}
+				if (!groupParts.contains(m.asCards())) {
+					groupParts = groupParts.add(m.asCards());
+					makedMelds = makedMelds.add(m);
+					System.out.println("catch");
+				}
+			}
+			tHands = tHands.remove(groupParts);
+		}else{
+			Cards gHands = tHands.remove(Card.JOKER);
+			gHands = gHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.ACE)));
+			Melds groups = Melds.parseGroupMelds(gHands);
+			groups = Melds.sort(groups, new CompareToMeldSize());
+			if (showFlag) {
+				if (!groups.isEmpty())
+					System.out.println("First Look : " + groups.get(0).toString());
+			}
+			for (Meld m : groups) {
+				if (showFlag) {
+					System.out.println("Look Group : " + m.toString());
+				}
+				if (!groupParts.contains(m.asCards())) {
+					groupParts = groupParts.add(m.asCards());
+					makedMelds = makedMelds.add(m);
+					System.out.println("catch");
 
+				}
 			}
 		}
+		
 		tHands = tHands.remove(groupParts);
 
 		// 残ったカードで階段ができるなら作る（ジョーカーがあるなら代用）
@@ -147,6 +292,8 @@ public class PatternMake {
 		if (tHands.contains(Card.S3) && !tHands.contains(Card.JOKER) && jokerFlag) {
 			makedMelds = makedMelds.add(createSingleMeld(Card.S3));
 		}
+		
+		
 
 		// 革命の有無、JOKER無しの階段役を取り除き、その後JOKERありの役を作る
 		Melds sequence = Melds.EMPTY_MELDS;
@@ -154,35 +301,153 @@ public class PatternMake {
 		if (dummyHands.contains(Card.JOKER)) {
 			if (!place.isReverse()) {
 				// 非革命時、JOKERを抜いてできる階段を作る
+				Cards seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.remove(Card.JOKER);
-				// dummyHands =
-				// dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
-				dummyHands = dummyHands.remove(Melds.project(sequence));
-				// JOKER入れてできる階段も作る
+//				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.JACK)));
+				Melds seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				dummyHands = dummyHands.remove(seqParts);
+				tHands = tHands.remove(seqParts);
+				seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.add(Card.JOKER);
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+				seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				tHands = tHands.remove(seqParts);
+//				dummyHands = dummyHands.remove(Card.JOKER);
+//				// dummyHands =
+//				// dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
+//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+//				dummyHands = dummyHands.remove(Melds.project(sequence));
+//				// JOKER入れてできる階段も作る
+//				dummyHands = dummyHands.add(Card.JOKER);
+//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			} else {
 				// 革命中
+				Cards seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.remove(Card.JOKER);
-				// dummyHands =
-				// dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
-				dummyHands = dummyHands.remove(Melds.project(sequence));
+//				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.ACE)));
+				Melds seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				dummyHands = dummyHands.remove(seqParts);
+				tHands = tHands.remove(seqParts);
+				seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.add(Card.JOKER);
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+				seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				tHands = tHands.remove(seqParts);
+//				dummyHands = dummyHands.remove(Card.JOKER);
+//				// dummyHands =
+//				// dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
+//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+//				dummyHands = dummyHands.remove(Melds.project(sequence));
+//				dummyHands = dummyHands.add(Card.JOKER);
+//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}
 		} else {
 			if (!place.isReverse()) {
 				// 非革命時
+				Cards seqParts = Cards.EMPTY_CARDS;
+//				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.JACK)));
+				Melds seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				tHands = tHands.remove(seqParts);
 				// dummyHands =
 				// dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+				//sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			} else {
 				// 革命中
+				Cards seqParts = Cards.EMPTY_CARDS;
+//				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.ACE)));
+				Melds seq = Melds.parseSequenceMelds(dummyHands);
+				seq = Melds.sort(seq, new CompareToMeldSize());
+				if (showFlag) {
+					if (!seq.isEmpty())
+						System.out.println("First Look : " + seq.get(0).toString());
+				}
+				for (Meld m : seq) {
+					if (showFlag) {
+						System.out.println("Look SEQ : " + m.toString());
+					}
+					if (!seqParts.contains(m.asCards())) {
+						seqParts = seqParts.add(m.asCards());
+						makedMelds = makedMelds.add(m);
+						System.out.println("catch");
+					}
+				}
+				tHands = tHands.remove(seqParts);
 				// dummyHands =
 				// dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+				//sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}
 		}
 
