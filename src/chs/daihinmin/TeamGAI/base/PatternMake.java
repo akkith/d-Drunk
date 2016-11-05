@@ -15,6 +15,7 @@ public class PatternMake {
 	}
 
 	public Melds patFirstMake(Cards hands, Place place, boolean jokerFlag) {
+
 		Cards tHands = hands;
 		Cards.sort(tHands);
 		if (showFlag) {
@@ -31,24 +32,30 @@ public class PatternMake {
 		// 革命の有無、JOKER無しの階段役を取り除き、その後JOKERありの役を作る
 		Melds sequence = Melds.EMPTY_MELDS;
 		Cards dummyHands = tHands;
-		if (dummyHands.contains(Card.JOKER)) {
-			if (!place.isReverse()) {
-				// 非革命時、JOKERを抜いてできる階段を作る
+
+		
+		if (dummyHands.contains(Card.JOKER)){  
+			if (!place.isReverse()){
+				//非革命時、JOKERを抜いてできる階段を作る
 				dummyHands = dummyHands.remove(Card.JOKER);
-				dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
+				//dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
+				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.JACK)));
 				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 				dummyHands = dummyHands.remove(Melds.project(sequence));
-				// JOKER入れてできる階段も作る
-				dummyHands = dummyHands.add(Card.JOKER);
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
-			} else {
-				// 革命中
+				//JOKER入れてできる階段も作る
+//				dummyHands = dummyHands.add(Card.JOKER);
+//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+			}else{
+				//革命中
 				dummyHands = dummyHands.remove(Card.JOKER);
-				dummyHands = dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
+//				dummyHands = dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
+				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.ACE)));
+
+
 				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 				dummyHands = dummyHands.remove(Melds.project(sequence));
-				dummyHands = dummyHands.add(Card.JOKER);
-				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+//				dummyHands = dummyHands.add(Card.JOKER);
+//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}
 		} else {
 			if (!place.isReverse()) {
@@ -61,28 +68,13 @@ public class PatternMake {
 				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}
 		}
+		
 
 		// 役集合に追加
 		makedMelds = makedMelds.add(sequence);
 		// 作業用手札から取り除く
 		tHands = tHands.remove(Melds.project(sequence));
-		// do{
-		// sequence = Melds.parseSequenceMelds(tHands);
-		// if(!sequence.isEmpty()){
-		// Melds max_seq = sequence.extract(Melds.MAX_SIZE);
-		// makedMelds = makedMelds.add(max_seq);
-		// tHands = tHands.remove( Melds.project(max_seq) );
-		// }
-		//
-		// }while(!sequence.isEmpty());
-		/*
-		 * //size が大きい順にペアを作っていく for(int i = 4; i >= 2; i--){ Melds groups =
-		 * Melds.parseGroupMelds(tHands.extract(Cards.JOKERS.not())).extract(
-		 * Melds.sizeOf(i)); if (!groups.isEmpty()) { if (showFlag) {
-		 * System.out.println("Look groups" + groups.toString()); } makedMelds =
-		 * makedMelds.add(groups); // 作業用手札からカードを取り除く tHands =
-		 * tHands.remove(Melds.project(groups)); } }
-		 */
+
 		// sizeが大きい順にペアを作っていく
 		Cards groupParts = Cards.EMPTY_CARDS;
 		Melds groups = Melds.parseGroupMelds(tHands.extract(Cards.JOKERS.not()));
@@ -130,6 +122,13 @@ public class PatternMake {
 			System.out.println("makedMelds is :");
 			System.out.println(makedMelds.toString());
 		}
+		
+//		if (timerFlag) {
+//			end = System.currentTimeMillis();
+//			//cardList.showDetail();
+//			System.out.println((end - start) + "ms");
+//		}
+		
 		return makedMelds;
 	}
 
@@ -205,7 +204,7 @@ public class PatternMake {
 		// tHands = tHands.remove(Melds.project(groups));
 		// }
 		// }
-		
+
 		// sizeが大きい順にペアを作っていく
 		Cards groupParts = Cards.EMPTY_CARDS;
 		Melds groups = Melds.parseGroupMelds(tHands.extract(Cards.JOKERS.not()));
