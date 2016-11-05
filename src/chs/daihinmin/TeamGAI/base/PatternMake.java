@@ -14,38 +14,14 @@ public class PatternMake {
 		// do nothing
 	}
 	
-	
-	
-	
-	
-
-	
-	
-	
-	
-
 	public Melds patFirstMake(Cards hands, Place place,boolean jokerFlag) {
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		// 時間計測用
-		boolean timerFlag = true;
-		long start = 0, end = 0; // 時間計測用
-		if (timerFlag){
-			start = System.currentTimeMillis();
-		}
-		
-		
-		
-		
-		
-		
+	
+//		// 時間計測用
+//		boolean timerFlag = true;
+//		long start = 0, end = 0; // 時間計測用
+//		if (timerFlag){
+//			start = System.currentTimeMillis();
+//		}
 		
 		Cards tHands = hands;
 		Cards.sort(tHands);
@@ -160,20 +136,11 @@ public class PatternMake {
 			System.out.println("makedMelds is :" + makedMelds.toString());
 		}
 		
-		
-		
-		
-		
-		if (timerFlag) {
-			end = System.currentTimeMillis();
-			//cardList.showDetail();
-			System.out.println((end - start) + "ms");
-		}
-		
-		
-		
-		
-		
+//		if (timerFlag) {
+//			end = System.currentTimeMillis();
+//			//cardList.showDetail();
+//			System.out.println((end - start) + "ms");
+//		}
 		
 		return makedMelds;
 	}

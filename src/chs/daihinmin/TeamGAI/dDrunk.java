@@ -87,7 +87,7 @@ public class dDrunk extends BotSkeleton {
 
 		// 現在のカード状況で考えられる役を登録
 		cardList.updateMeldsList();
-//
+
 //		if (timerFlag)
 //			start = System.currentTimeMillis();
 //		// 初回のみ手札のカードを未登場カードリストから除く
