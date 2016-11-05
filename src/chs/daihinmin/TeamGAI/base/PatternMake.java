@@ -98,8 +98,7 @@ public class PatternMake {
 			if (!groupParts.contains(m.asCards())) {
 				groupParts = groupParts.add(m.asCards());
 				makedMelds = makedMelds.add(m);
-				System.out.println("catch");
-
+				if(showFlag) System.out.println("catch");
 			}
 		}
 		tHands = tHands.remove(groupParts);
@@ -222,7 +221,7 @@ public class PatternMake {
 			if (!groupParts.contains(m.asCards())) {
 				groupParts = groupParts.add(m.asCards());
 				makedMelds = makedMelds.add(m);
-				System.out.println("catch");
+				if(showFlag) System.out.println("catch");
 
 			}
 		}

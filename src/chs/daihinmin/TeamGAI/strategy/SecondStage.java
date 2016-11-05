@@ -24,6 +24,7 @@ public class SecondStage {
 			return createSingleMeld(Card.S3);			
 		}
 		double nomalValue = 0;
+		
 		int removeMeldNum = 0;
 		// 手札の役の点数表を作る
 		meldHash.clear();
