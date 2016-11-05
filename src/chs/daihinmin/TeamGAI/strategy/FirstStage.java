@@ -31,7 +31,7 @@ public  class FirstStage {
 
 	public static Meld requestingPlay(Melds melds, Place place, Rules rules,PlayedCardList pList) {
 
-		boolean showFlag = true;
+		boolean showFlag = false;
 		//シングルJOKERにスペ３出す
 		if(place.hasJoker() && place.type() == Meld.Type.SINGLE && melds.contains(createSingleMeld(Card.S3))){
 			return createSingleMeld(Card.S3);			

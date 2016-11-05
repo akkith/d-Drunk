@@ -16,7 +16,7 @@ public class SecondStage {
 	 */
 
 	HashMap<Meld, Double> meldHash = new HashMap<Meld, Double>();
-	public boolean showFlag = true;
+	public boolean showFlag = false;
 
 	public Meld requestingPlay(Melds melds, Place place, Rules rules, PlayedCardList pList) {
 		//スペードの３を持っていてジョーカーシングルが来たら出す
