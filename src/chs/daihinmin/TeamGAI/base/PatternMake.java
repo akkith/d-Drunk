@@ -14,10 +14,6 @@ public class PatternMake {
 		// do nothing
 	}
 
-	
-	public Melds patFirstMake(Cards hands, Place place,boolean jokerFlag) {
-	
-
 	public Melds patFirstMake(Cards hands, Place place, boolean jokerFlag) {
 
 		Cards tHands = hands;
@@ -37,7 +33,7 @@ public class PatternMake {
 		Melds sequence = Melds.EMPTY_MELDS;
 		Cards dummyHands = tHands;
 
-		if(sequence != Melds.parseSequenceMelds(dummyHands)){
+		
 		if (dummyHands.contains(Card.JOKER)){  
 			if (!place.isReverse()){
 				//非革命時、JOKERを抜いてできる階段を作る
@@ -72,7 +68,7 @@ public class PatternMake {
 				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}
 		}
-		}
+		
 
 		// 役集合に追加
 		makedMelds = makedMelds.add(sequence);
@@ -209,7 +205,7 @@ public class PatternMake {
 		// tHands = tHands.remove(Melds.project(groups));
 		// }
 		// }
-		
+
 		// sizeが大きい順にペアを作っていく
 		Cards groupParts = Cards.EMPTY_CARDS;
 		Melds groups = Melds.parseGroupMelds(tHands.extract(Cards.JOKERS.not()));

@@ -55,6 +55,11 @@ public  class FirstStage {
 			Melds sMelds = melds.extract(Melds.SINGLES);
 			sMelds = sMelds.extract(Melds.rankOver(Rank.THREE).and(Melds.rankUnder(Rank.JACK)));
 			sMelds = sMelds.extract(Melds.SINGLES);
+//			for ( int i = 0; i < sMelds.size() ;i++){
+//				if (sMelds.get(i).rank().toInt() == 8){
+//					sMelds = sMelds.remove(sMelds.get(i));
+//				}
+//			}
 			// singleが４以上１３以下なら出す（８は要検討）、
 			if (!sMelds.isEmpty()) {
 				return sMelds.get(0);
