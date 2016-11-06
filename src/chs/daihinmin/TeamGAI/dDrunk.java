@@ -8,11 +8,11 @@ import chs.daihinmin.TeamGAI.strategy.*;
 import chs.daihinmin.TeamGAI.base.*;
 
 public class dDrunk extends BotSkeleton {
-	Default defaultStrategy = new Default();
+	//Default defaultStrategy = new Default();
 	Dashiosimi nomalStrategy = new Dashiosimi();
 	SecondStage secStage = new SecondStage();
 	FinalStage finStage = new FinalStage();
-	PatternMake patMaker = new PatternMake();
+	PatternMake patMaker = new PatternMake2();
 	// HT
 	FirstStage firstStage = new FirstStage();
 	PlayedCardList cardList;
@@ -113,8 +113,8 @@ public class dDrunk extends BotSkeleton {
 				System.out.println("==sequence first==");
 			}
 			
-			melds = patMaker.patFirstMake(this.hand(), place, cardList.jokerFlag);
-			
+			//melds = patMaker.patFirstMake(this.hand(), place, cardList.jokerFlag);
+			melds = patMaker.patMake(this.hand(), place, cardList.jokerFlag);
 			if(timerFlag){
 				mid = System.currentTimeMillis();
 				System.out.println("1st make hand : " + (mid - start) + "ms");
