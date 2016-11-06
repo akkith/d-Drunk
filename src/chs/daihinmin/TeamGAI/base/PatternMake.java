@@ -33,29 +33,31 @@ public class PatternMake {
 		Melds sequence = Melds.EMPTY_MELDS;
 		Cards dummyHands = tHands;
 
-		
-		if (dummyHands.contains(Card.JOKER)){  
-			if (!place.isReverse()){
-				//非革命時、JOKERを抜いてできる階段を作る
+		if (dummyHands.contains(Card.JOKER)) {
+			if (!place.isReverse()) {
+				// 非革命時、JOKERを抜いてできる階段を作る
 				dummyHands = dummyHands.remove(Card.JOKER);
-				//dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
+				// dummyHands =
+				// dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
 				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.JACK)));
 				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 				dummyHands = dummyHands.remove(Melds.project(sequence));
-				//JOKER入れてできる階段も作る
-//				dummyHands = dummyHands.add(Card.JOKER);
-//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
-			}else{
-				//革命中
+				// JOKER入れてできる階段も作る
+				// dummyHands = dummyHands.add(Card.JOKER);
+				// sequence =
+				// sequence.add(Melds.parseSequenceMelds(dummyHands));
+			} else {
+				// 革命中
 				dummyHands = dummyHands.remove(Card.JOKER);
-//				dummyHands = dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
+				// dummyHands =
+				// dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
 				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.ACE)));
-
 
 				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 				dummyHands = dummyHands.remove(Melds.project(sequence));
-//				dummyHands = dummyHands.add(Card.JOKER);
-//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+				// dummyHands = dummyHands.add(Card.JOKER);
+				// sequence =
+				// sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}
 		} else {
 			if (!place.isReverse()) {
@@ -68,7 +70,6 @@ public class PatternMake {
 				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}
 		}
-		
 
 		// 役集合に追加
 		makedMelds = makedMelds.add(sequence);
@@ -90,7 +91,7 @@ public class PatternMake {
 			if (!groupParts.contains(m.asCards())) {
 				groupParts = groupParts.add(m.asCards());
 				makedMelds = makedMelds.add(m);
-				if(showFlag){
+				if (showFlag) {
 					System.out.println("catch");
 				}
 			}
@@ -124,18 +125,25 @@ public class PatternMake {
 			System.out.println("makedMelds is :");
 			System.out.println(makedMelds.toString());
 		}
-		
-//		if (timerFlag) {
-//			end = System.currentTimeMillis();
-//			//cardList.showDetail();
-//			System.out.println((end - start) + "ms");
-//		}
-		
+
+		// if (timerFlag) {
+		// end = System.currentTimeMillis();
+		// //cardList.showDetail();
+		// System.out.println((end - start) + "ms");
+		// }
+
 		return makedMelds;
 	}
-
+	
 	// 基本になる役わけ関数
 	public Melds patMake(Cards hands, Place place, boolean jokerFlag) {
+		if (place.isRenew() || place.type() == Meld.Type.SEQUENCE) {
+			return patMakeKou(hands, place, jokerFlag);
+		}
+		return patMakeOtsu(hands, place, jokerFlag);
+	}
+
+	public Melds patMakeKou(Cards hands, Place place, boolean jokerFlag) {
 		Cards tHands = hands;
 		Cards.sort(tHands);
 		if (showFlag) {
@@ -222,7 +230,7 @@ public class PatternMake {
 			if (!groupParts.contains(m.asCards())) {
 				groupParts = groupParts.add(m.asCards());
 				makedMelds = makedMelds.add(m);
-				if(showFlag){
+				if (showFlag) {
 					System.out.println("catch");
 				}
 
@@ -241,6 +249,104 @@ public class PatternMake {
 		// }
 		//
 		// }while(!sequence.isEmpty());
+
+		// ジョーカーを最強のカードにしておく
+		if (tHands.contains(Card.JOKER)) {
+			Suit suit = place.suits().size() == 0 ? Suit.SPADES : place.suits().get(0);
+			Rank jRunk = place.order() == Order.NORMAL ? Rank.JOKER_HIGHEST : Rank.JOKER_LOWEST;
+			makedMelds = makedMelds.add(createSingleMeldJoker(suit, jRunk));
+			tHands = tHands.remove(Card.JOKER);
+		}
+
+		// それでも余ったカードを単騎にする
+		makedMelds = makedMelds.add(Melds.parseSingleMelds(tHands));
+
+		if (showFlag) {
+			System.out.println("makedMelds is :");
+			System.out.println(makedMelds.toString());
+		}
+		return makedMelds;
+	}
+
+	public Melds patMakeOtsu(Cards hands, Place place, boolean jokerFlag) {
+		Cards tHands = hands;
+		Cards.sort(tHands);
+		if (showFlag) {
+			System.out.println("tHand is :" + tHands.toString());
+		}
+		// 作ったペアはここにしまう
+		Melds makedMelds = Melds.EMPTY_MELDS;
+
+		// ジョーカーを持っておらずスペードの３があれば役として登録
+		if (tHands.contains(Card.S3) && !tHands.contains(Card.JOKER) && jokerFlag) {
+			makedMelds = makedMelds.add(createSingleMeld(Card.S3));
+		}
+
+		// sizeが大きい順にペアを作っていく
+		Cards groupParts = Cards.EMPTY_CARDS;
+		Melds groups = Melds.parseGroupMelds(tHands.extract(Cards.JOKERS.not()));
+		groups = Melds.sort(groups, new CompareToMeldSize());
+		if (showFlag) {
+			if (!groups.isEmpty())
+				System.out.println("First Look : " + groups.get(0).toString());
+		}
+		for (Meld m : groups) {
+			if (showFlag) {
+				System.out.println("Look Group : " + m.toString());
+			}
+			if (!groupParts.contains(m.asCards())) {
+				groupParts = groupParts.add(m.asCards());
+				makedMelds = makedMelds.add(m);
+				if (showFlag) {
+					System.out.println("catch");
+				}
+
+			}
+		}
+		tHands = tHands.remove(groupParts);
+
+		// 革命の有無、JOKER無しの階段役を取り除き、その後JOKERありの役を作る
+		Melds sequence = Melds.EMPTY_MELDS;
+		Cards dummyHands = tHands;
+		if (dummyHands.contains(Card.JOKER)) {
+			if (!place.isReverse()) {
+				// 非革命時、JOKERを抜いてできる階段を作る
+				dummyHands = dummyHands.remove(Card.JOKER);
+				// dummyHands =
+				// dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
+				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+				dummyHands = dummyHands.remove(Melds.project(sequence));
+				// JOKER入れてできる階段も作る
+				dummyHands = dummyHands.add(Card.JOKER);
+				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+			} else {
+				// 革命中
+				dummyHands = dummyHands.remove(Card.JOKER);
+				// dummyHands =
+				// dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
+				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+				dummyHands = dummyHands.remove(Melds.project(sequence));
+				dummyHands = dummyHands.add(Card.JOKER);
+				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+			}
+		} else {
+			if (!place.isReverse()) {
+				// 非革命時
+				// dummyHands =
+				// dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
+				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+			} else {
+				// 革命中
+				// dummyHands =
+				// dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
+				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+			}
+		}
+
+		// 役集合に追加
+		makedMelds = makedMelds.add(sequence);
+		// 作業用手札から取り除く
+		tHands = tHands.remove(Melds.project(sequence));
 
 		// ジョーカーを最強のカードにしておく
 		if (tHands.contains(Card.JOKER)) {

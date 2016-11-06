@@ -116,15 +116,19 @@ public class SecondStage {
 			if(melds.get(0).rank() == Rank.EIGHT){
 				return melds.get(0);
 			}
-			//強いなかの平均以下なら出す
-			double averageValue = 0;
-			int cnt = 0;
-			for(Meld m : melds){
-				averageValue += meldHash.get(m);
-				cnt++;
-			}
-			averageValue /= cnt;
-			if(meldHash.get(melds.get(0)) >= averageValue){
+//			//強いなかの平均以下なら出す
+//			double averageValue = 0;
+//			int cnt = 0;
+//			for(Meld m : melds){
+//				averageValue += meldHash.get(m);
+//				cnt++;
+//			}
+//			averageValue /= cnt;
+//			if(meldHash.get(melds.get(0)) >= averageValue){
+//				return melds.get(0);
+//			}
+			//場を流せそうなら出す
+			if(meldHash.get(melds.get(0)) < 1){
 				return melds.get(0);
 			}
 			

@@ -12,7 +12,7 @@ public class dDrunk extends BotSkeleton {
 	Dashiosimi nomalStrategy = new Dashiosimi();
 	SecondStage secStage = new SecondStage();
 	FinalStage finStage = new FinalStage();
-	PatternMake patMaker = new PatternMake2();
+	PatternMake patMaker = new PatternMake();
 	// HT
 	FirstStage firstStage = new FirstStage();
 	PlayedCardList cardList;
@@ -28,7 +28,7 @@ public class dDrunk extends BotSkeleton {
 	//デバッグ表示用
 	boolean showFlag = false;
 	// 時間計測用
-	boolean timerFlag = true;
+	boolean timerFlag = false;
 
 	/*
 	 * public Cards requestingGivingCards(){
@@ -39,6 +39,7 @@ public class dDrunk extends BotSkeleton {
 		super.gameStarted();
 		cardList = new PlayedCardList();
 		isGameStart = false;
+		
 		// 年のため二回目
 		seqNum = 0;
 		times = 0;
@@ -46,6 +47,7 @@ public class dDrunk extends BotSkeleton {
 
 	public void played(Integer num, Meld playedMeld) {
 		super.played(num, playedMeld);
+		
 		// 場に出たカードを記録
 		cardList.updateList(playedMeld);
 	}
@@ -77,13 +79,21 @@ public class dDrunk extends BotSkeleton {
 		Place place = this.place();
 		// ルール
 		Rules rules = this.rules();		
+		if(!place.isRenew() &&showFlag){
+			System.out.println("   my last :" + cardList.lastPlayedMeld.toString());
+			System.out.println("place last :" + place.lastMeld().toString());
+			
+		}
+		
 		//最後に出したのが自分ならパス
-		if(!place.isRenew() && cardList.lastPlayedMeld == place.lastMeld()){
+		if(!place.isRenew() && ( cardList.lastPlayedMeld.toString() == place.lastMeld().toString() ) ){
 			if(showFlag){
 				System.out.println("PASS");
 			}
 			return PASS;
 		}
+
+
 
 		// 現在のカード状況で考えられる役を登録
 		if(seqNum == 1){
@@ -114,7 +124,7 @@ public class dDrunk extends BotSkeleton {
 			}
 			
 			//melds = patMaker.patFirstMake(this.hand(), place, cardList.jokerFlag);
-			melds = patMaker.patMake(this.hand(), place, cardList.jokerFlag);
+			melds = patMaker.patFirstMake(this.hand(), place, cardList.jokerFlag);
 			if(timerFlag){
 				mid = System.currentTimeMillis();
 				System.out.println("1st make hand : " + (mid - start) + "ms");
@@ -144,9 +154,7 @@ public class dDrunk extends BotSkeleton {
 				System.out.println("==sequence final==");
 			}
 			melds = patMaker.patMakeFinal(this.hand(), place, rules, cardList.jokerFlag);
-			if(showFlag){
-				System.out.println(melds.toString());
-			}
+			
 			if(timerFlag){
 				mid = System.currentTimeMillis();
 				System.out.println("3rd make hand : " + (mid - start) + "ms");
@@ -176,6 +184,7 @@ public class dDrunk extends BotSkeleton {
 //			//cardList.showDetail();
 //			System.out.println((end - start) + "ms");
 //		}
+		
 		return playMeld;
 	}
 

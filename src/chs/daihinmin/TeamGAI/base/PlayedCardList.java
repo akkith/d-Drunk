@@ -16,7 +16,7 @@ public class PlayedCardList {
 	Melds groupMeldsList = null;
 	Melds sequenceMeldsList = null;
 	// 最後に自分が出した役
-	public Meld lastPlayedMeld = null;
+	public Meld lastPlayedMeld = PASS;
 	// ジョーカーが出たか否か
 	public boolean jokerFlag = true;
 	// 残りタイプ別組数
