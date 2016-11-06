@@ -8,7 +8,7 @@ import jp.ac.uec.daihinmin.card.Rank;
 import jp.ac.uec.daihinmin.card.Melds.*;
 
 public class PatternMake {
-	boolean showFlag = false;
+	boolean showFlag = true;
 
 	public PatternMake() {
 		// do nothing
@@ -59,7 +59,7 @@ public class PatternMake {
 				}
 				dummyHands = dummyHands.remove(seqParts);
 				tHands = tHands.remove(seqParts);
-				seqParts = Cards.EMPTY_CARDS;
+				//seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.add(Card.JOKER);
 				seq = Melds.parseSequenceMelds(dummyHands);
 				seq = Melds.sort(seq, new CompareToMeldSize());
@@ -78,15 +78,7 @@ public class PatternMake {
 					}
 				}
 				tHands = tHands.remove(seqParts);
-//				//非革命時、JOKERを抜いてできる階段を作る
-//				dummyHands = dummyHands.remove(Card.JOKER);
-//				//dummyHands = dummyHands.extract(Cards.rankOver(Rank.JACK).and(Cards.rankUnder(Rank.THREE)));
-//				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.JACK)));
-//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
-//				dummyHands = dummyHands.remove(Melds.project(sequence));
-//				//JOKER入れてできる階段も作る
-////				dummyHands = dummyHands.add(Card.JOKER);
-////				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+
 			}else{
 				//革命中
 				Cards seqParts = Cards.EMPTY_CARDS;
@@ -110,7 +102,7 @@ public class PatternMake {
 				}
 				dummyHands = dummyHands.remove(seqParts);
 				tHands = tHands.remove(seqParts);
-				seqParts = Cards.EMPTY_CARDS;
+//				seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.add(Card.JOKER);
 				seq = Melds.parseSequenceMelds(dummyHands);
 				seq = Melds.sort(seq, new CompareToMeldSize());
@@ -129,15 +121,7 @@ public class PatternMake {
 					}
 				}
 				tHands = tHands.remove(seqParts);
-//				dummyHands = dummyHands.remove(Card.JOKER);
-////				dummyHands = dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
-//				dummyHands = dummyHands.extract(Cards.rankUnder(Rank.THREE).and(Cards.rankOver(Rank.ACE)));
-//
-//
-//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
-//				dummyHands = dummyHands.remove(Melds.project(sequence));
-////				dummyHands = dummyHands.add(Card.JOKER);
-////				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
+
 			}
 		} else {
 			if (!place.isReverse()) {
@@ -184,8 +168,6 @@ public class PatternMake {
 					}
 				}
 				tHands = tHands.remove(seqParts);
-//				dummyHands = dummyHands.extract(Cards.rankOver(Rank.ACE).and(Cards.rankUnder(Rank.THREE)));
-//				sequence = sequence.add(Melds.parseSequenceMelds(dummyHands));
 			}
 		}
 		
@@ -324,7 +306,7 @@ public class PatternMake {
 				}
 				dummyHands = dummyHands.remove(seqParts);
 				tHands = tHands.remove(seqParts);
-				seqParts = Cards.EMPTY_CARDS;
+				//seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.add(Card.JOKER);
 				seq = Melds.parseSequenceMelds(dummyHands);
 				seq = Melds.sort(seq, new CompareToMeldSize());
@@ -374,7 +356,7 @@ public class PatternMake {
 				}
 				dummyHands = dummyHands.remove(seqParts);
 				tHands = tHands.remove(seqParts);
-				seqParts = Cards.EMPTY_CARDS;
+				//seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.add(Card.JOKER);
 				seq = Melds.parseSequenceMelds(dummyHands);
 				seq = Melds.sort(seq, new CompareToMeldSize());
