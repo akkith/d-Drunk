@@ -59,7 +59,7 @@ public class PatternMake {
 				}
 				dummyHands = dummyHands.remove(seqParts);
 				tHands = tHands.remove(seqParts);
-				//seqParts = Cards.EMPTY_CARDS;
+				seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.add(Card.JOKER);
 				seq = Melds.parseSequenceMelds(dummyHands);
 				seq = Melds.sort(seq, new CompareToMeldSize());
@@ -102,7 +102,7 @@ public class PatternMake {
 				}
 				dummyHands = dummyHands.remove(seqParts);
 				tHands = tHands.remove(seqParts);
-//				seqParts = Cards.EMPTY_CARDS;
+				seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.add(Card.JOKER);
 				seq = Melds.parseSequenceMelds(dummyHands);
 				seq = Melds.sort(seq, new CompareToMeldSize());
@@ -306,7 +306,7 @@ public class PatternMake {
 				}
 				dummyHands = dummyHands.remove(seqParts);
 				tHands = tHands.remove(seqParts);
-				//seqParts = Cards.EMPTY_CARDS;
+				seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.add(Card.JOKER);
 				seq = Melds.parseSequenceMelds(dummyHands);
 				seq = Melds.sort(seq, new CompareToMeldSize());
@@ -356,7 +356,7 @@ public class PatternMake {
 				}
 				dummyHands = dummyHands.remove(seqParts);
 				tHands = tHands.remove(seqParts);
-				//seqParts = Cards.EMPTY_CARDS;
+				seqParts = Cards.EMPTY_CARDS;
 				dummyHands = dummyHands.add(Card.JOKER);
 				seq = Melds.parseSequenceMelds(dummyHands);
 				seq = Melds.sort(seq, new CompareToMeldSize());
