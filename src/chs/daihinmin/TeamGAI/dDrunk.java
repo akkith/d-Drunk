@@ -86,7 +86,7 @@ public class dDrunk extends BotSkeleton {
 		}
 		
 		//最後に出したのが自分ならパス
-		if(!place.isRenew() && ( cardList.lastPlayedMeld.toString() == place.lastMeld().toString() ) ){
+		if(!place.isRenew() && ( cardList.lastPlayedMeld == place.lastMeld() ) ){
 			if(showFlag){
 				System.out.println("PASS");
 			}

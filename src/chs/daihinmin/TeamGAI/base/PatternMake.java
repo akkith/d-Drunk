@@ -74,7 +74,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				dummyHands = dummyHands.remove(seqParts);
@@ -94,7 +94,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				tHands = tHands.remove(seqParts);
@@ -118,7 +118,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				dummyHands = dummyHands.remove(seqParts);
@@ -138,7 +138,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				tHands = tHands.remove(seqParts);
@@ -170,7 +170,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				tHands = tHands.remove(seqParts);
@@ -193,7 +193,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				tHands = tHands.remove(seqParts);
@@ -231,7 +231,7 @@ public class PatternMake {
 					groupParts = groupParts.add(m.asCards());
 					makedMelds = makedMelds.add(m);
 //>>>>>>> 4f27462785807f9a6d3b874628d949a0c7bea095
-					System.out.println("catch");
+					//System.out.println("catch");
 				}
 			}
 			tHands = tHands.remove(groupParts);
@@ -251,7 +251,7 @@ public class PatternMake {
 				if (!groupParts.contains(m.asCards())) {
 					groupParts = groupParts.add(m.asCards());
 					makedMelds = makedMelds.add(m);
-					System.out.println("catch");
+					//System.out.println("catch");
 
 
 				}
@@ -343,7 +343,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				dummyHands = dummyHands.remove(seqParts);
@@ -363,7 +363,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				tHands = tHands.remove(seqParts);
@@ -393,7 +393,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				dummyHands = dummyHands.remove(seqParts);
@@ -413,7 +413,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				tHands = tHands.remove(seqParts);
@@ -443,7 +443,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				tHands = tHands.remove(seqParts);
@@ -467,7 +467,7 @@ public class PatternMake {
 					if (!seqParts.contains(m.asCards())) {
 						seqParts = seqParts.add(m.asCards());
 						makedMelds = makedMelds.add(m);
-						System.out.println("catch");
+						//System.out.println("catch");
 					}
 				}
 				tHands = tHands.remove(seqParts);
