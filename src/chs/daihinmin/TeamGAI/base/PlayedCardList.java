@@ -9,8 +9,12 @@ public class PlayedCardList {
 	Cards cardList = null;
 	// 軽量版リスト
 	Cards cardListLite = null;
+	Cards cardListLiteRev = null;
 	// 自分の持っていないカードでできる役集合
 	Melds meldsList = null;
+	Melds singleMeldsList = null;
+	Melds groupMeldsList = null;
+	Melds sequenceMeldsList = null;
 	// 最後に自分が出した役
 	public Meld lastPlayedMeld = null;
 	// ジョーカーが出たか否か
@@ -31,6 +35,7 @@ public class PlayedCardList {
 		cardList = Card.values();
 		cardList = cardList.extract(Cards.JOKERS.not());
 		cardListLite = cardList.extract(Cards.rankUnder(Rank.TEN));
+		cardListLiteRev = cardList.extract(Cards.rankOver(Rank.SEVEN));
 		if (dammyCheck) {
 			dammyCards = cardList.extract(Cards.JOKERS.not());
 			dammyCards = dammyCards.extract(Cards.rankUnder(Rank.valueOf(10)));
@@ -41,6 +46,7 @@ public class PlayedCardList {
 	public void updateList(Meld meld) {
 		cardList = cardList.remove(meld.asCards());
 		cardListLite = cardListLite.remove(meld.asCards());
+		cardListLiteRev = cardListLiteRev.remove(meld.asCards());
 		if (meld.asCards().contains(Card.JOKER)) {
 			jokerFlag = false;
 		}
@@ -52,6 +58,7 @@ public class PlayedCardList {
 	public void updateList(Cards cards) {
 		cardList = cardList.remove(cards);
 		cardListLite = cardListLite.remove(cards);
+		cardListLiteRev = cardListLiteRev.remove(cards);
 		if (cards.contains(Card.JOKER)) {
 			jokerFlag = false;
 		}
@@ -69,33 +76,39 @@ public class PlayedCardList {
 		 */
 
 		// meldsList = Melds.parseMelds(cardList.extract(Cards.JOKERS.not()));
-		Melds singleMelds;
-		Melds groupMelds;
-		Melds sequenceMelds;
-		meldsList = Melds.EMPTY_MELDS;
+//		Melds singleMelds;
+//		Melds groupMelds;
+//		Melds sequenceMelds;
+//		meldsList = Melds.EMPTY_MELDS;
+		singleMeldsList = Melds.EMPTY_MELDS;
+		groupMeldsList = Melds.EMPTY_MELDS;
+		sequenceMeldsList = Melds.EMPTY_MELDS;
+//		singleMelds = Melds.parseSingleMelds(cardList);
+//		groupMelds = Melds.parseGroupMelds(cardList);
+//		sequenceMelds = Melds.parseSequenceMelds(cardList);
+//		meldsList = meldsList.add(singleMelds);
+//		meldsList = meldsList.add(groupMelds);
+//		meldsList = meldsList.add(sequenceMelds);
+		
+		singleMeldsList = Melds.parseSingleMelds(cardList);
+		groupMeldsList = Melds.parseGroupMelds(cardList);
+		sequenceMeldsList = Melds.parseSequenceMelds(cardList);
 
-		singleMelds = Melds.parseSingleMelds(cardList);
-		groupMelds = Melds.parseGroupMelds(cardList);
-		sequenceMelds = Melds.parseSequenceMelds(cardList);
-		meldsList = meldsList.add(singleMelds);
-		meldsList = meldsList.add(groupMelds);
-		meldsList = meldsList.add(sequenceMelds);
-
-		// 数を数える
-		namOfSingle = singleMelds.size();
-		namOfGroup = groupMelds.size();
-		namOfSequence = sequenceMelds.size();
+//		// 数を数える
+//		namOfSingle = singleMelds.size();
+//		namOfGroup = groupMelds.size();
+//		namOfSequence = sequenceMelds.size();
 
 		if (dammyCheck) {
 			// meldsList = Melds.parseMelds(dammyCards);
 			meldsList = Melds.EMPTY_MELDS;
-			singleMelds = Melds.parseSingleMelds(dammyCards);
-			groupMelds = Melds.parseGroupMelds(dammyCards);
-			sequenceMelds = Melds.parseSequenceMelds(dammyCards);
+			singleMeldsList = Melds.parseSingleMelds(dammyCards);
+			groupMeldsList = Melds.parseGroupMelds(dammyCards);
+			sequenceMeldsList = Melds.parseSequenceMelds(dammyCards);
 		}
-		meldsList = meldsList.add(singleMelds);
-		meldsList = meldsList.add(groupMelds);
-		meldsList = meldsList.add(sequenceMelds);
+//		meldsList = meldsList.add(singleMelds);
+//		meldsList = meldsList.add(groupMelds);
+//		meldsList = meldsList.add(sequenceMelds);
 
 		// meldsList = Melds.parseMelds(cardList);
 		/*
@@ -105,42 +118,58 @@ public class PlayedCardList {
 	}
 
 	// 持ってい無いカードでの役集合生成(軽量版)
-	public void updateMeldsListLite() {
+	public void updateMeldsListLite(Order order) {
 
 		// meldsList = Melds.parseMelds(cardList.extract(Cards.JOKERS.not()));
-		Melds singleMelds;
-		Melds groupMelds;
-		Melds sequenceMelds;
+		//Melds singleMelds;
+		//Melds groupMelds;
+		//Melds sequenceMelds;
+		//meldsList = Melds.EMPTY_MELDS;
 		meldsList = Melds.EMPTY_MELDS;
-
-		singleMelds = Melds.parseSingleMelds(cardListLite);
-		groupMelds = Melds.parseGroupMelds(cardListLite);
-		sequenceMelds = Melds.parseSequenceMelds(cardListLite);
-		meldsList = meldsList.add(singleMelds);
-		meldsList = meldsList.add(groupMelds);
-		meldsList = meldsList.add(sequenceMelds);
-
-		// 数を数える
-		namOfSingle = singleMelds.size();
-		namOfGroup = groupMelds.size();
-		namOfSequence = sequenceMelds.size();
-
-		meldsList = meldsList.add(singleMelds);
-		meldsList = meldsList.add(groupMelds);
-		meldsList = meldsList.add(sequenceMelds);
-	}
-
-	public int getNamOfType(Meld.Type type) {
-		if (type == Meld.Type.SINGLE) {
-			return namOfSingle;
-		} else if (type == Meld.Type.GROUP) {
-			return namOfGroup;
-		} else if (type == Meld.Type.SEQUENCE) {
-			return namOfSequence;
+		singleMeldsList = Melds.EMPTY_MELDS;
+		groupMeldsList = Melds.EMPTY_MELDS;
+		sequenceMeldsList = Melds.EMPTY_MELDS;
+		
+		Cards cll;
+		if(order == Order.NORMAL){
+			cll = cardListLite;
+		}else{
+			cll = cardListLiteRev;
 		}
+		
+		//singleMelds = Melds.parseSingleMelds(cll);
+		//groupMelds = Melds.parseGroupMelds(cll);
+		//sequenceMelds = Melds.parseSequenceMelds(cll);
+		//meldsList = meldsList.add(singleMelds);
+		//meldsList = meldsList.add(groupMelds);
+		//meldsList = meldsList.add(sequenceMelds);
+		
+		singleMeldsList = Melds.parseSingleMelds(cll);
+		groupMeldsList = Melds.parseGroupMelds(cll);
+		sequenceMeldsList = Melds.parseSequenceMelds(cll);
 
-		return -1;
+//		// 数を数える
+//		namOfSingle = singleMelds.size();
+//		namOfGroup = groupMelds.size();
+//		namOfSequence = sequenceMelds.size();
+
+		meldsList = meldsList.add(singleMeldsList);
+		meldsList = meldsList.add(groupMeldsList);
+		meldsList = meldsList.add(sequenceMeldsList);
 	}
+	
+	
+//	public int getNamOfType(Meld.Type type) {
+//		if (type == Meld.Type.SINGLE) {
+//			return namOfSingle;
+//		} else if (type == Meld.Type.GROUP) {
+//			return namOfGroup;
+//		} else if (type == Meld.Type.SEQUENCE) {
+//			return namOfSequence;
+//		}
+//
+//		return -1;
+//	}
 
 	// 最後に出した組を覚える
 	public void setLastPlayedMeld(Meld meld) {
@@ -165,6 +194,21 @@ public class PlayedCardList {
 		 */
 		// Melds melds;
 
+		switch(meld.type()){
+		case SINGLE:
+			meldsList = singleMeldsList;
+			break;
+		case GROUP:
+			meldsList = singleMeldsList;
+			break;
+		case SEQUENCE:
+			meldsList = singleMeldsList;
+			break;
+		default: 
+			meldsList = Melds.EMPTY_MELDS;
+			
+		}
+		
 		if (meld.rank() == Rank.EIGHT) {
 			return 0;
 		}

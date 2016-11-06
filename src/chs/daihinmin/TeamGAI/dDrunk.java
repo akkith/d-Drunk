@@ -88,7 +88,11 @@ public class dDrunk extends BotSkeleton {
 		// 現在のカード状況で考えられる役を登録
 		if(seqNum == 1){
 			//cardList.updateMeldsList();
-			cardList.updateMeldsListLite();
+			if(place.order() == Order.NORMAL){
+				cardList.updateMeldsListLite(place.order());
+			}else{
+				cardList.updateMeldsListLite(place.order());
+			}
 			if(timerFlag){
 				mid = System.currentTimeMillis();
 				System.out.println("card list time : " + (mid - start) + "ms");
